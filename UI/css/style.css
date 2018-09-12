@@ -116,7 +116,7 @@ nav .brand a {
 }
 
 .order-item .order-button .button {
-  display: block;
+  display: inline-block;
   margin-top: auto;
   padding: 5px;
   color: #d35400;
