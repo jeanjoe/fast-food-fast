@@ -1,0 +1,68 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+a {
+  text-decoration: none;
+}
+nav {
+  background: #d35400;
+  padding: 20px;
+  display:  flex;
+  justify-content: space-between;
+}
+
+nav .brand {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+}
+ nav .nav-left {
+
+ }
+ nav .nav-left .nav-item {
+    color: #d35400;
+    padding: 10px;
+    background: #bdc3c7;
+    text-transform: capitalize;
+    font-size: 14px;
+ }
+ nav .nav-left .nav-item:hover {
+    color: #fff;
+ }
+
+.form {
+  width: 35%;
+  margin: auto;
+}
+.form .signup {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.form h4 {
+  text-align: center;
+}
+.form .field {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+.form label {
+  font-size: 14px;
+  font-weight: 600;
+}
+.form .field input {
+  display: block;
+  padding: 10px;
+  width: 100%;
+  border: 1px solid #bdc3c7;
+}
+.form .button {
+  margin-top: 10px;
+}
+.form .button .submit {
+  border: none;
+  padding: 10px;
+  background: #d35400;
+  font-weight: bold;
+  color: #fff;
+}
