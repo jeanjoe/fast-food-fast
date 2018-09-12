@@ -12,7 +12,7 @@ nav {
   justify-content: space-between;
 }
 
-nav .brand {
+nav .brand a {
   color: #fff;
   font-size: 18px;
   font-weight: 700;
@@ -65,4 +65,63 @@ nav .brand {
   background: #d35400;
   font-weight: bold;
   color: #fff;
+}
+.orders {
+  width: 60%;
+  margin: auto;
+}
+
+.orders h4 {
+  text-align: center;
+}
+.orders .menu {
+  border-bottom: 1px double #d35400;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.order-item {
+  margin: 10px 0;
+  display: flex;
+  justify-content: flex-start;
+  border-bottom: 1px dotted #d35400;
+}
+
+.order-image {
+  flex: 1;
+}
+
+.order-image img {
+  margin: 0;
+  height: 80px;
+  width: 100px;
+}
+
+.order-content {
+  flex: 3;
+}
+.order-content .title {
+  font-weight: bold;
+  color: #d35400;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.order-content .title .price {
+  background: #d35400;
+  color: #fff;
+  border-radius: 5px;
+  padding: 2px;
+  font-size: 12px;
+}
+
+.order-item .order-button .button {
+  display: block;
+  margin-top: auto;
+  padding: 5px;
+  color: #d35400;
+  font-weight: bold;
+  font-size: 12px;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid #d35400;
 }
