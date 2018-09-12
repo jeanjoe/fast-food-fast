@@ -1,6 +1,7 @@
 body {
   margin: 0;
   padding: 0;
+  background: #ecf0f1;
 }
 a {
   text-decoration: none;
@@ -71,7 +72,7 @@ nav .brand a {
   margin: auto;
 }
 
-.orders h4 {
+.orders h4, .orders h6 {
   text-align: center;
 }
 .orders .menu {
@@ -124,4 +125,26 @@ nav .brand a {
   cursor: pointer;
   background: transparent;
   border: 1px solid #d35400;
+}
+
+.order-item .order-button .pending {
+  background: #d35400 !important;
+  color: #fff;
+}
+
+.order-item .order-button .completed {
+  background: #27ae60 !important;
+  border: 1px solid #27ae60;
+  color: #fff;
+}
+
+.order-item .order-button .declined {
+  background: #c0392b !important;
+  border: 1px solid #c0392b;
+  color: #fff;
+}
+
+.order-item .date {
+  color: #2c3e50;
+  font-size: 12px;
 }
