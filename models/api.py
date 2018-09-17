@@ -18,5 +18,5 @@ def add_order():
     data = request.get_json()
     saved_order = orders.add_order(data['menu_id'], data['client_id'], data['location'], data['quantity'])
     if not saved_order:
-        return jsonify({"error": "Unable process your order"})
+        return jsonify({"error": "Unable process your order"}), 200
     return jsonify({"data": saved_order}), 201

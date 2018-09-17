@@ -25,3 +25,6 @@ class Order:
         }
         self.orders.append(order)
         return order
+
+    def search_order(self, order_id):
+        return [order for order in self.orders if order['id'] == order_id]
