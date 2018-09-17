@@ -1,6 +1,6 @@
 # Fast-Food-Fast - Restaurant.
 
-Fast-Food-Fast is the fasted food delivery service app for a restaurant.
+Fast-Food-Fast is the fastest food delivery service app for restaurants.
 
 ##### Demo
 
