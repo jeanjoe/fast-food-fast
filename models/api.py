@@ -20,3 +20,10 @@ def add_order():
     if not saved_order:
         return jsonify({"error": "Unable process your order"}), 200
     return jsonify({"data": saved_order}), 201
+
+@app.route('/api/v1/orders/<order_id>')
+def get_order(order_id):
+    search_result = orders.search_order(order_id)
+    if not search_result:
+        return jsonify({"message": 'Cannot find this order'}), 404
+    return jsonify({ "order": search_result}), 200
