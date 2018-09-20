@@ -29,6 +29,14 @@ class Order:
         self.orders.append(order)
         return order
 
+    def update_order_status(self, order_id, status):
+        """Search order and update status if found."""
+        order = self.search_order(order_id)        
+        if order:
+            order[0].update({'status': status})
+            return order
+        return None
+
     def search_order(self, order_id):
         return [order for order in self.orders if order['id'] == order_id]
 
@@ -44,6 +52,9 @@ class ManageOrder:
             try:
                 input = request.get_json()
                 input[data]
+                """Check for empty input."""
+                if not input[data]:
+                    raise Exception(data)
             except Exception as ex:
                 error_message.append({ 'field' : str(ex), 'message': str(ex) + ' is required' })
         #return errors

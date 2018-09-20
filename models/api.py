@@ -37,3 +37,16 @@ def get_order(order_id):
     if not search_result:
         return jsonify({"message": 'Cannot find this order'}), 404
     return jsonify({ "order": search_result}), 200
+
+@app.route('/api/v1/orders/<order_id>', methods=['PUT'])
+def update_order_status(order_id):
+    """update order status."""
+    get_input = request.get_json()
+    validation = manage_orders.validate_input(['status'])
+    if validation:
+        return jsonify({"error": validation}), 200
+
+    update_order = orders.update_order_status(order_id,get_input['status'])
+    if update_order:
+        return jsonify({"data": update_order})
+    return jsonify({"error": "Unable to find this order"})
