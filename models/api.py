@@ -18,11 +18,15 @@ def add_order():
     """Add new order to order lists."""
     validation = manage_orders.validate_input(['menu_id', 'client_id', 'location', 'quantity'])
     if validation:
-        return jsonify({"error": 'Validation error', "data": validation})
+        return jsonify({"error": 'Validation error', "data": validation}), 200
 
     """If Validation passes, add to list."""
-    data = request.get_json()
-    saved_order = orders.add_order(data['menu_id'], data['client_id'], data['location'], data['quantity'])
+    get_input = request.get_json()
+    """Search Duplicate."""
+    if manage_orders.search_duplicate_order(get_input['client_id'], get_input['menu_id']):
+        return jsonify({"error": "This order has already been registered"}), 200
+        
+    saved_order = orders.add_order(get_input['menu_id'], get_input['client_id'], get_input['location'], get_input['quantity'])
     if not saved_order:
         return jsonify({"error": "Unable process your order"}), 200
     return jsonify({"data": saved_order}), 201

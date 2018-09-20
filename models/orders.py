@@ -2,10 +2,12 @@ from flask import request
 from datetime import datetime
 import uuid
 
+menu_items = []
+orders = []
+
 class Order:
 
-    
-    def __init__(self, menu_items = [], orders = []):
+    def __init__(self):
         self.menu_items = menu_items
         self.orders = orders
 
@@ -42,3 +44,10 @@ class ManageOrder:
                 error_message.append({ 'field' : str(ex), 'message': str(ex) + ' is required' })
         #return errors
         return error_message
+
+    def search_duplicate_order(self, client_id, menu_id):
+        result = False 
+        for order in orders:
+            if order['client_id'] == client_id and order['menu_id'] == menu_id and order['status'] == 'pending':
+                result = True
+        return result
