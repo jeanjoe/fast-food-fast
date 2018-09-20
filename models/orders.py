@@ -33,6 +33,10 @@ class Order:
         return [order for order in self.orders if order['id'] == order_id]
 
 class ManageOrder:
+
+    def __init__(self):
+        self.order = Order()
+        self.orders = orders
    
     def validate_input(self, validation_data = []):
         error_message = []
@@ -47,7 +51,7 @@ class ManageOrder:
 
     def search_duplicate_order(self, client_id, menu_id):
         result = False 
-        for order in orders:
-            if order['client_id'] == client_id and order['menu_id'] == menu_id and order['status'] == 'pending':
+        for item in self.orders:
+            if item['client_id'] == client_id and item['menu_id'] == menu_id and item['status'] == 'pending':
                 result = True
         return result
