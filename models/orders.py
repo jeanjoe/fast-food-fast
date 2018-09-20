@@ -1,3 +1,4 @@
+from flask import request
 from datetime import datetime
 import uuid
 
@@ -28,3 +29,16 @@ class Order:
 
     def search_order(self, order_id):
         return [order for order in self.orders if order['id'] == order_id]
+
+class ManageOrder:
+   
+    def validate_input(self, validation_data = []):
+        error_message = []
+        for data in validation_data:
+            try:
+                input = request.get_json()
+                input[data]
+            except Exception as ex:
+                error_message.append({ 'field' : str(ex), 'message': str(ex) + ' is required' })
+        #return errors
+        return error_message

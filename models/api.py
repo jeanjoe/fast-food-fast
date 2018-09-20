@@ -1,8 +1,9 @@
 from flask import Flask, jsonify, request
-from models.orders import Order
+from models.orders import Order, ManageOrder
 
 app = Flask(__name__)
 orders = Order()
+manage_orders = ManageOrder()
 
 @app.route('/', methods=['GET'])
 def index():
@@ -15,6 +16,11 @@ def get_all_orders():
 @app.route('/api/v1/orders', methods=['POST'])
 def add_order():
     """Add new order to order lists."""
+    validation = manage_orders.validate_input(['menu_id', 'client_id', 'location', 'quantity'])
+    if validation:
+        return jsonify({"error": 'Validation error', "data": validation})
+
+    """If Validation passes, add to list."""
     data = request.get_json()
     saved_order = orders.add_order(data['menu_id'], data['client_id'], data['location'], data['quantity'])
     if not saved_order:
