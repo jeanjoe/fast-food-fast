@@ -18,7 +18,7 @@ def add_order():
     """Add new order to order lists."""
     validation = manage_orders.validate_input(['menu_id', 'client_id', 'location', 'quantity'])
     if validation:
-        return jsonify({"error": 'Validation error', "data": validation}), 200
+        return jsonify({"message": 'Validation error', "errors": validation}), 200
 
     """If Validation passes, add to list."""
     get_input = request.get_json()

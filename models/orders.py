@@ -55,8 +55,8 @@ class ManageOrder:
                 """Check for empty input."""
                 if not input[data]:
                     raise Exception(data)
-            except Exception as ex:
-                error_message.append({ 'field' : str(ex), 'message': str(ex) + ' is required' })
+            except:
+                error_message.append({ 'field' : data, 'message': data + ' is required' })
         #return errors
         return error_message
 
