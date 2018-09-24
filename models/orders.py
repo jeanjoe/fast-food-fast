@@ -38,29 +38,33 @@ class Order:
         return None
 
     def search_order(self, order_id):
+        """Search specific order."""
         return [order for order in self.orders if order['id'] == order_id]
 
 class ManageOrder:
+    """Manage orders."""
 
     def __init__(self):
         self.order = Order()
         self.orders = orders
    
-    def validate_input(self, validation_data = []):
+    def validate_input(self, validation_data=list):
+        """Search order and update status if found."""
         error_message = []
         for data in validation_data:
             try:
                 input = request.get_json()
                 input[data]
-                """Check for empty input."""
+                #Check for empty input
                 if not input[data]:
                     raise Exception(data)
             except:
-                error_message.append({ 'field' : data, 'message': data + ' is required' })
+                error_message.append({'field': data, 'message': data + ' is required'})
         #return errors
         return error_message
 
     def search_duplicate_order(self, client_id, menu_id):
+        """Search dulpicate order."""
         result = False 
         for item in self.orders:
             if item['client_id'] == client_id and item['menu_id'] == menu_id and item['status'] == 'pending':

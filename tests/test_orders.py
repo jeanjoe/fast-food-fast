@@ -1,21 +1,26 @@
-import unittest, requests, uuid
+import unittest
+import uuid
+import requests
 from httmock import HTTMock
-from models.orders import Order
 from .mock import MockOrder
 
-BASE_URL  = 'http://127.0.0.1:5000/api/v1/orders'
+BASE_URL = 'http://127.0.0.1:5000/api/v1/orders'
 
 class OrderTest(unittest.TestCase):
+    """Order Tests."""
 
     def setUp(self):
+        """Create an object of MockOrder."""
         self.mock_data = MockOrder()
 
     def test_get_orders(self):
+        """Test get all orders."""
         response = requests.get(BASE_URL)
         self.assertEqual(response.status_code, 200)
 
     def test_post_order(self):
-        test_data =  {
+        """Post new order."""
+        test_data = {
             "client_id": str(uuid.uuid4()),
             "location": "Bukoto",
             "menu_id": str(uuid.uuid4()),
@@ -23,15 +28,14 @@ class OrderTest(unittest.TestCase):
         }
         response = requests.post(BASE_URL, json=test_data)
         self.assertEqual(response.status_code, 201)
-    
     def test_get_specific_order(self):
         """Mock data and then retrieve it."""
         with HTTMock(self.mock_data.mock_order_response):
-            r = requests.get(BASE_URL + "/f262b0b6-be59-11e8-9e8b-e24b8e248ee6")
-            self.assertEqual(r.status_code, 200)
-            assert r.json()['quantity'] == 2
-            assert r.json()['location'] == "Bukoto"
-            assert r.json()['status'] == "pending"
+            response = requests.get(BASE_URL + "/f262b0b6-be59-11e8-9e8b-e24b8e248ee6")
+            self.assertEqual(response.status_code, 200)
+            assert response.json()['quantity'] == 2
+            assert response.json()['location'] == "Bukoto"
+            assert response.json()['status'] == "pending"
 
     def test_get_specific_order_not_found(self):
         """Test specific order not found."""
@@ -57,4 +61,5 @@ class OrderTest(unittest.TestCase):
         self.assertEqual(response.json().get('error'), "Unable to find this order")
 
     def tearDown(self):
+        """Destroy variable mock_data."""
         self.mock_data = ""
