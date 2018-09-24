@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/jeanjoe/fast-food-fast.svg?branch=master)](https://travis-ci.org/jeanjoe/fast-food-fast)
 [![Maintainability](https://api.codeclimate.com/v1/badges/128fba01502d5f70e484/maintainability)](https://codeclimate.com/github/jeanjoe/fast-food-fast/maintainability)
 
 # Fast-Food-Fast - Restaurant.
