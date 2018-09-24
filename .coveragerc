@@ -9,6 +9,8 @@ omit =
     */tests/.pytest_cache/*
     */tests/__init__.py
     */tests/models.py
+    */models/__init__.py
+    */models/mock.py
     */api/*
     */.vscode/*
     */certifi/*
