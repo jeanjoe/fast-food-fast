@@ -1,3 +1,5 @@
+[![Maintainability](https://api.codeclimate.com/v1/badges/128fba01502d5f70e484/maintainability)](https://codeclimate.com/github/jeanjoe/fast-food-fast/maintainability)
+
 # Fast-Food-Fast - Restaurant.
 
 Fast-Food-Fast is the fastest food delivery service app for restaurants.
