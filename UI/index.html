@@ -27,7 +27,7 @@
         TODAY'S MENU LIST
       </div>
 
-      <div class="order-item">
+      <form action="history.html" class="order-item">
         <div class="order-image">
           <img src="images/default.png" alt="default image">
         </div>
@@ -36,13 +36,20 @@
           <div class="description">
             All Sea Foods served with chillie.
           </div>
+          <div class="field">            
+            <input type="text" placeholder="Location" required>
+            <select name="quatity" id="quantity">
+              <option value="1">1</option>
+              <option value="2">2</option>
+            </select>
+          </div>
         </div>
         <div class="order-button">
-          <a href="history.html" class="button">Order Now</a>
+          <button type="submit" class="button">Order Now</button>
         </div>
-      </div>
+      </form>
 
-      <div class="order-item">
+      <form action="history.html" class="order-item">
         <div class="order-image">
           <img src="images/default.png" alt="default image">
         </div>
@@ -51,11 +58,18 @@
           <div class="description">
             All Food served with Beef, Beans, G-Nuts.
           </div>
+          <div class="field">            
+            <input type="text" placeholder="Location" required>
+            <select name="quatity" id="quantity">
+              <option value="1">1</option>
+              <option value="2">2</option>
+            </select>
+          </div>
         </div>
         <div class="order-button">
-          <a href="history.html" class="button">Order Now</a>
+          <button type="submit" class="button">Order Now</button>
         </div>
-      </div>
+      </form>
 
     </div>
   </div>
