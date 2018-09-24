@@ -25,32 +25,11 @@ To run the application, you need to have Python 3 and above installed on your ma
 - run `pip install -r requirements.txt`
 - run `python app.py`
 
-##### Get list of all Orders
+## How to use the API endpoints
 
-Route to `api/v1/orders`
-
-Method = `GET`
-
-##### Post an Order
-
-Route  `api/v1/orders`
-
-Method `POST`
-
-Requirements `client_id, menu_id, location, quantity`
-
-##### Get a specific order
-
-Route  `api/v1/orders/order_id`
-
-Method `GET`
-
-Requirements `N/A`
-
-##### Update a specific order status
-
-Route  `api/v1/orders/order_id`
-
-Method `PUT`
-
-Requirements `status`
+|  Task         | URL | METHOD      | PARAMETERS |
+| --- | --- | --- | --- |
+|  Post an  order   |  api/v1/orders     |   POST         |  menu_id, client_id, location, quantity |
+|  Get all orders    |  api/v1/orders     |  GET           |    N/A                |
+|  Get a specific order  |  api/v1/orders/order_id |  GET |  N/A |
+|  Update status of specifc order | api/v1/orders/order_id | PUT | status |
