@@ -1,0 +1,47 @@
+
+[report]
+omit = 
+    */__pycache__/*
+    */.pyc
+    */.pytest_cache/*
+    */.pytest_cache/*
+    */tests/__pycache__/*
+    */tests/.pytest_cache/*
+    */tests/__init__.py
+    */tests/models.py
+    */api/*
+    */.vscode/*
+    */certifi/*
+    */chardet/*
+    */idna/*
+    */requests/*
+    */urllib3/*
+    */encodings/*
+    */hmac.py
+    */http/*
+    */mimetypes.py 
+    */netrc.py
+    */stringprep.py 
+    */tests/__init__.py  
+    */app/models.py 
+    */app/__init__.py 
+    */env/*
+    *//home/travis/virtualenv/*
+    */virtualenv/*
+
+    */decimal.py
+    */asyncio.py
+    */asyncio/*
+    */concurrent.py
+    */concurrent/*
+    */ctypes.py
+    */ctypes/*
+    */html.py
+    */html/entities.py
+    */multiprocessing/connection.py
+    */multiprocessing/util.py 
+    */numbers.py
+    */uuid.py
+    */app.py 
+    
+show_missing = True
