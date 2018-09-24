@@ -10,6 +10,10 @@ Fast-Food-Fast is the fastest food delivery service app for restaurants.
 
 The Demo is hosted on [gh-pages](https://jeanjoe.github.io/fast-food-fast/UI/index.html)
 
+##### Heroku Link
+
+https://manzede-fast-food-fast.herokuapp.com/api/v1/orders
+
 ##### How to run the app
 
 To run the application, you need to have Python 3 and above installed on your machine and follow these procedures:
