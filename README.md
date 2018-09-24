@@ -25,3 +25,21 @@ To run the application, you need to have Python 3 and above installed on your ma
 Route to `api/v1/orders`
 
 Method = `GET`
+
+##### Post an Order
+
+Route  `api/v1/orders`
+Method `POST`
+Requirements `client_id, menu_id, location, quantity`
+
+##### Get a specific order
+
+Route  `api/v1/orders/order_id`
+Method `POST`
+Requirements `client_id, menu_id, location, quantity`
+
+##### Update a specific order status
+
+Route  `api/v1/orders/order_id`
+Method `POST`
+Requirements `client_id, menu_id, location, quantity`
