@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/jeanjoe/fast-food-fast.svg?branch=master)](https://travis-ci.org/jeanjoe/fast-food-fast)
+[![Coverage Status](https://coveralls.io/repos/github/jeanjoe/fast-food-fast/badge.svg?branch=api%2Fv1)](https://coveralls.io/github/jeanjoe/fast-food-fast?branch=api%2Fv1)
 [![Maintainability](https://api.codeclimate.com/v1/badges/128fba01502d5f70e484/maintainability)](https://codeclimate.com/github/jeanjoe/fast-food-fast/maintainability)
 
 # Fast-Food-Fast - Restaurant.
@@ -29,17 +30,23 @@ Method = `GET`
 ##### Post an Order
 
 Route  `api/v1/orders`
+
 Method `POST`
+
 Requirements `client_id, menu_id, location, quantity`
 
 ##### Get a specific order
 
 Route  `api/v1/orders/order_id`
-Method `POST`
-Requirements `client_id, menu_id, location, quantity`
+
+Method `GET`
+
+Requirements `N/A`
 
 ##### Update a specific order status
 
 Route  `api/v1/orders/order_id`
-Method `POST`
-Requirements `client_id, menu_id, location, quantity`
+
+Method `PUT`
+
+Requirements `status`
