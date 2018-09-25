@@ -1,7 +1,7 @@
 env/*
 .vscode/*
-models/__pycache__/*
-models/__init__.pyc
+app/__pycache__/*
+app/__init__.pyc
 tests/__pycache__/*
 tests/test_orders.pyc
 tests/__init__.pyc

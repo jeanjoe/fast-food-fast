@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from models.orders import Order, ManageOrder
+from app.orders import Order, ManageOrder
 
 app = Flask(__name__)
 orders = Order()
