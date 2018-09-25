@@ -12,7 +12,7 @@ class MockOrder:
                     "location": "Bukoto",
                     "menu_id": str(uuid.uuid4()),
                     "quantity": 2,
-                    "status": "pending"
+                    "status": "completed"
                 }
         status_code= 200
         header = {'content-type': 'application/json'}
