@@ -15,12 +15,12 @@ class Order:
         """Get list of all orders."""
         return self.orders
 
-    def add_order(self, menu_id, client_id, location, quantity):
+    def add_order(self, location, quantity):
         """Create New order."""
         order = {
             "id": str(uuid.uuid1()),
-            "menu_id": menu_id,
-            "client_id": client_id,
+            "menu_id": str(uuid.uuid4()),
+            "client_id": str(uuid.uuid1()),
             "location": location,
             "quantity": quantity,
             "status": "pending",

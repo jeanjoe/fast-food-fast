@@ -18,16 +18,13 @@ def get_all_orders():
 @app.route('/api/v1/orders', methods=['POST'])
 def add_order():
     """Add new order to order lists."""
-    validation = manage_orders.validate_input(['menu_id', 'client_id', 'location', 'quantity'])
+    validation = manage_orders.validate_input(['location', 'quantity'])
     if validation:
         return jsonify({"message": 'Validation error', "errors": validation}), 200
 
     #If Validation passes, add to list
     get_input = request.get_json()
-    if manage_orders.search_duplicate_order(get_input['client_id'], get_input['menu_id']):
-        return jsonify({"error": "This order has already been registered"}), 200
-    saved_order = orders.add_order(
-        get_input['menu_id'], get_input['client_id'], get_input['location'], get_input['quantity'])
+    saved_order = orders.add_order(get_input['location'], get_input['quantity'])
     if not saved_order:
         return jsonify({"error": "Unable process your order"}), 200
     return jsonify({"data": saved_order}), 201
