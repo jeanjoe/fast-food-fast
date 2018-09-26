@@ -4,8 +4,7 @@ import random
 from httmock import HTTMock
 from .mock import MockOrder
 
-# BASE_URL = 'https://manzede-fast-food-fast.herokuapp.com/api/v1/orders'
-BASE_URL = "http://127.0.0.1:5000/api/v1/orders"
+BASE_URL = 'https://manzede-fast-food-fast.herokuapp.com/api/v1/orders'
 
 class OrderTest(unittest.TestCase):
     """Order Tests."""
