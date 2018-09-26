@@ -1,6 +1,5 @@
 from flask import request
 from datetime import datetime
-import uuid
 
 menu_items = []
 orders = []
@@ -15,12 +14,12 @@ class Order:
         """Get list of all orders."""
         return self.orders
 
-    def add_order(self, location, quantity):
+    def add_order(self, menu_id, client_id, location, quantity):
         """Create New order."""
         order = {
-            "id": str(uuid.uuid1()),
-            "menu_id": str(uuid.uuid4()),
-            "client_id": str(uuid.uuid1()),
+            "id": self.last_order_id(),
+            "menu_id": menu_id,
+            "client_id": client_id,
             "location": location,
             "quantity": quantity,
             "status": "pending",
@@ -28,6 +27,12 @@ class Order:
         }
         self.orders.append(order)
         return order
+
+    def last_order_id(self):
+        if len(self.orders) < 1:
+            return 1
+        else:
+            return self.orders[-1]['id'] + 1
 
     def update_order_status(self, order_id, status):
         """Search order and update status if found."""
@@ -39,7 +44,7 @@ class Order:
 
     def search_order(self, order_id):
         """Search specific order."""
-        return [order for order in self.orders if order['id'] == order_id]
+        return [order for order in self.orders if order['id'] == int(order_id)]
 
 class ManageOrder:
     """Manage orders."""
@@ -65,8 +70,7 @@ class ManageOrder:
 
     def search_duplicate_order(self, client_id, menu_id):
         """Search dulpicate order."""
-        result = False 
         for item in self.orders:
-            if item['client_id'] == client_id and item['menu_id'] == menu_id and item['status'] == 'pending':
-                result = True
-        return result
+            if item['client_id'] == int(client_id) and item['menu_id'] == int(menu_id) and item['status'] == 'pending':
+                return True
+        return False

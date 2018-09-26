@@ -1,6 +1,6 @@
 import unittest
-import uuid
 import requests
+import random
 from httmock import HTTMock
 from .mock import MockOrder
 
@@ -22,9 +22,9 @@ class OrderTest(unittest.TestCase):
     def test_post_order(self):
         """Post new order."""
         test_data = {
-            "client_id": str(uuid.uuid4()),
+            "client_id": random.randint(100,200),
             "location": "Bukoto",
-            "menu_id": str(uuid.uuid4()),
+            "menu_id": random.randint(300,400),
             "quantity": 2
         }
         response = requests.post(BASE_URL, json=test_data)
@@ -33,7 +33,7 @@ class OrderTest(unittest.TestCase):
     def test_get_specific_order(self):
         """Mock data and then retrieve it."""
         with HTTMock(self.mock_data.mock_order_response):
-            response = requests.get(BASE_URL + "/f262b0b6-be59-11e8-9e8b-e24b8e248ee6")
+            response = requests.get(BASE_URL + "/12345")
             self.assertEqual(response.status_code, 200)
             assert response.json()['quantity'] == 2
             assert response.json()['location'] == "Bukoto"
@@ -41,7 +41,7 @@ class OrderTest(unittest.TestCase):
 
     def test_get_specific_order_not_found(self):
         """Test specific order not found."""
-        response = requests.get(BASE_URL + "/b6b7a7f8-0a1d-402d-b41a-03705debdb10")
+        response = requests.get(BASE_URL + "/98989")
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json().get('message'), "Cannot find this order")
 
@@ -51,7 +51,7 @@ class OrderTest(unittest.TestCase):
             "status": "completed"
         } 
         with HTTMock(self.mock_data.mock_order_response):
-            response = requests.put(BASE_URL + "/f262b0b6-be59-11e8-9e8b-e24b8e248ee6", json=status)
+            response = requests.put(BASE_URL + "/12345", json=status)
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.json().get('status'), "completed")
 
@@ -60,7 +60,7 @@ class OrderTest(unittest.TestCase):
         status = {
             "status": "completed"
         }
-        response = requests.put(BASE_URL + "/b3c6a8f4-bdb3-11e8-9747", json=status)
+        response = requests.put(BASE_URL + "/98989", json=status)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json().get('error'), "Unable to find this order")
 

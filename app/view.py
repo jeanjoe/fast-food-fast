@@ -18,18 +18,21 @@ def get_all_orders():
 @app.route('/api/v1/orders', methods=['POST'])
 def add_order():
     """Add new order to order lists."""
-    validation = manage_orders.validate_input(['location', 'quantity'])
+    validation = manage_orders.validate_input(['menu_id', 'client_id', 'location', 'quantity'])
     if validation:
         return jsonify({"message": 'Validation error', "errors": validation}), 200
 
     #If Validation passes, add to list
     get_input = request.get_json()
-    saved_order = orders.add_order(get_input['location'], get_input['quantity'])
+    #Validate duplicates
+    if manage_orders.search_duplicate_order(get_input['client_id'], get_input['menu_id']):
+        return jsonify({"error": "This order has already been registered"}), 200
+    saved_order = orders.add_order(get_input['menu_id'], get_input['client_id'], get_input['location'], get_input['quantity'])
     if not saved_order:
         return jsonify({"error": "Unable process your order"}), 200
     return jsonify({"data": saved_order}), 201
 
-@app.route('/api/v1/orders/<order_id>')
+@app.route('/api/v1/orders/<int:order_id>')
 def get_order(order_id):
     """get specific order."""
     search_result = orders.search_order(order_id)
@@ -37,7 +40,7 @@ def get_order(order_id):
         return jsonify({"message": 'Cannot find this order'}), 404
     return jsonify({"order": search_result}), 200
 
-@app.route('/api/v1/orders/<order_id>', methods=['PUT'])
+@app.route('/api/v1/orders/<int:order_id>', methods=['PUT'])
 def update_order_status(order_id):
     """update order status."""
     get_input = request.get_json()
