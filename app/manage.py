@@ -42,6 +42,14 @@ class Order:
             return order
         return None
 
+    def update_order_details(self, order_id, location, quantity):
+        """Search order and update details if found."""
+        order = self.search_order(order_id)        
+        if order:
+            order[0].update({'location': location, 'quantity': quantity})
+            return order
+        return None
+
     def search_order(self, order_id):
         """Search specific order."""
         return [order for order in self.orders if order['id'] == int(order_id)]

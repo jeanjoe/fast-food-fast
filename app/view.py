@@ -52,3 +52,17 @@ def update_order_status(order_id):
     if update_order:
         return jsonify({"data": update_order})
     return jsonify({"error": "Unable to find this order"})
+
+@app.route('/api/v1/orders/<int:order_id>/update', methods=['PUT'])
+def update_order_details(order_id):
+    """update order details."""
+    get_input = request.get_json()
+    validation = manage_orders.validate_input(['location', 'quantity'])
+    if validation:
+        return jsonify({"error": validation}), 200
+
+    update_details = orders.update_order_details(
+        order_id, get_input['location'], get_input['quantity'])
+    if update_details:
+        return jsonify({"order": update_details})
+    return jsonify({"error": "Unable to find this order"})
