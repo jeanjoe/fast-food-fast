@@ -1,69 +1,67 @@
+"""Tests for API endpoints."""
 import unittest
-import requests
 import random
-from httmock import HTTMock
-from .mock import MockOrder
+import json
+from app.view import app
 
-BASE_URL = 'https://manzede-fast-food-fast.herokuapp.com/api/v1/orders'
+BASE_URL = "/api/v1/orders"
 
 class OrderTest(unittest.TestCase):
     """Order Tests."""
 
     def setUp(self):
-        """Create an object of MockOrder."""
-        self.mock_data = MockOrder()
+        self.app = app.test_client()
+        self.app.testing = True
+        self.test_order = {"menu_id": 10, "client_id": 5, "quantity": 1, "location": "Bukoto"}
 
     def test_get_orders(self):
         """Test get all orders."""
-        response = requests.get(BASE_URL)
+        response = self.app.get(BASE_URL)
         self.assertEqual(response.status_code, 200)
-        self.assertIsInstance(response.json().get('orders'), list)
+        self.assertIsInstance(json.loads(response.data).get('orders'), list)
 
     def test_post_order(self):
         """Post new order."""
         test_data = {
-            "client_id": random.randint(100,200),
+            "client_id": random.randint(100, 200),
             "location": "Bukoto",
-            "menu_id": random.randint(300,400),
+            "menu_id": random.randint(300, 400),
             "quantity": 2
         }
-        response = requests.post(BASE_URL, json=test_data)
+        response = self.app.post(BASE_URL, json=test_data)
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json().get('data')['location'], "Bukoto")
+        self.assertEqual(json.loads(response.data)['data']['location'], "Bukoto")
+
     def test_get_specific_order(self):
-        """Mock data and then retrieve it."""
-        with HTTMock(self.mock_data.mock_order_response):
-            response = requests.get(BASE_URL + "/12345")
-            self.assertEqual(response.status_code, 200)
-            assert response.json()['quantity'] == 2
-            assert response.json()['location'] == "Bukoto"
-            assert response.json()['status'] == "completed"
+        """Test get specific order."""
+        self.app.post(BASE_URL, json=self.test_order)
+        response = self.app.get(BASE_URL + "/1")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.data).get('order')[0]['quantity'], 1)
+        self.assertEqual(json.loads(response.data).get('order')[0]['location'], "Bukoto")
+        self.assertEqual(json.loads(response.data).get('order')[0]['status'], "pending")
 
     def test_get_specific_order_not_found(self):
         """Test specific order not found."""
-        response = requests.get(BASE_URL + "/98989")
-        self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.json().get('message'), "Cannot find this order")
+        response = self.app.get(BASE_URL + "/98989")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.data).get('message'), "Cannot find this order")
 
     def test_update_specific_order(self):
         """Test update specific order."""
-        status = {
-            "status": "completed"
-        } 
-        with HTTMock(self.mock_data.mock_order_response):
-            response = requests.put(BASE_URL + "/12345", json=status)
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(response.json().get('status'), "completed")
+        status = {"status": "completed"}
+        self.app.post(BASE_URL, json=self.test_order)
+        response = self.app.put(BASE_URL + "/1", json=status)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.data).get('data')[0]['status'], "completed")
 
     def test_update_specific_order_not_found(self):
         """Test for updating order not found."""
-        status = {
-            "status": "completed"
-        }
-        response = requests.put(BASE_URL + "/98989", json=status)
+        status = {"status": "completed"}
+        response = self.app.put(BASE_URL + "/98989", json=status)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json().get('error'), "Unable to find this order")
+        self.assertEqual(json.loads(response.data).get('error'), "Unable to find this order")
 
     def tearDown(self):
-        """Destroy variable mock_data."""
-        self.mock_data = ""
+        """Destroy variable test_order."""
+        self.test_order = dict()
