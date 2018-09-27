@@ -54,6 +54,14 @@ class Order:
         """Search specific order."""
         return [order for order in self.orders if order['id'] == int(order_id)]
 
+    def delete_order(self, order_id):
+        """Remove this order from Order list."""
+        search = self.search_order(order_id)
+        if search:
+            self.orders.remove(search[0])
+            return True
+        return False
+
 class ManageOrder:
     """Manage orders."""
 

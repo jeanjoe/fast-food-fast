@@ -37,7 +37,7 @@ def get_order(order_id):
     """get specific order."""
     search_result = orders.search_order(order_id)
     if not search_result:
-        return jsonify({"message": 'Cannot find this order'}), 404
+        return jsonify({"message": 'Cannot find this order'}), 200
     return jsonify({"order": search_result}), 200
 
 @app.route('/api/v1/orders/<int:order_id>', methods=['PUT'])
@@ -50,8 +50,8 @@ def update_order_status(order_id):
 
     update_order = orders.update_order_status(order_id, get_input['status'])
     if update_order:
-        return jsonify({"data": update_order})
-    return jsonify({"error": "Unable to find this order"})
+        return jsonify({"data": update_order}), 200
+    return jsonify({"error": "Unable to find this order"}), 200
 
 @app.route('/api/v1/orders/<int:order_id>/update', methods=['PUT'])
 def update_order_details(order_id):
@@ -65,4 +65,17 @@ def update_order_details(order_id):
         order_id, get_input['location'], get_input['quantity'])
     if update_details:
         return jsonify({"order": update_details})
-    return jsonify({"error": "Unable to find this order"})
+    return jsonify({"error": "Unable to find this order"}), 200
+
+@app.route('/api/v1/orders/<int:order_id>', methods=['DELETE'])
+def delete_order(order_id):
+    """Delete order from list."""
+    search_result = orders.search_order(order_id)
+    if not search_result:
+        return jsonify({"message": 'Cannot find this order'}), 200
+
+    remove_order = orders.delete_order(order_id)
+    if remove_order:
+        return jsonify({"message": "Order deleted successfuly"}), 200
+    else:
+        return jsonify({"error",  "Unable to delete this order"}), 200

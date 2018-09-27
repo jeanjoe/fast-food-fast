@@ -34,6 +34,7 @@ To run the application, you need to have Python 3 and above installed on your ma
 |  Get a specific order  |  api/v1/orders/<int:order_id> |  GET |  N/A |
 |  Update status of specifc order | api/v1/orders/<int:order_id> | PUT | status |
 |  Update Order Deatils | api/v1/<int:order_id>/update | PUT | location, quantity |
+|  Delete specifc order | api/v1/orders/<int:order_id> | DELETE | N/A |
 
 ### How to Run the Tests
 
