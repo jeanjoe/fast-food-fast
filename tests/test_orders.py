@@ -18,7 +18,7 @@ class OrderTest(unittest.TestCase):
         """Test get all orders."""
         response = self.app.get(BASE_URL)
         self.assertEqual(response.status_code, 200)
-        self.assertIsInstance(json.loads(response.data).get('orders'), list)
+        self.assertIsInstance(json.loads(response.data.decode('utf-8')).get('orders'), list)
 
     def test_post_order(self):
         """Post new order."""
@@ -30,22 +30,22 @@ class OrderTest(unittest.TestCase):
         }
         response = self.app.post(BASE_URL, json=test_data)
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(json.loads(response.data)['data']['location'], "Bukoto")
+        self.assertEqual(json.loads(response.data.decode('utf-8'))['data']['location'], "Bukoto")
 
     def test_get_specific_order(self):
         """Test get specific order."""
         self.app.post(BASE_URL, json=self.test_order)
         response = self.app.get(BASE_URL + "/1")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.data).get('order')[0]['quantity'], 1)
-        self.assertEqual(json.loads(response.data).get('order')[0]['location'], "Bukoto")
-        self.assertEqual(json.loads(response.data).get('order')[0]['status'], "pending")
+        self.assertEqual(json.loads(response.data.decode('utf-8')).get('order')[0]['quantity'], 1)
+        self.assertEqual(json.loads(response.data.decode('utf-8')).get('order')[0]['location'], "Bukoto")
+        self.assertEqual(json.loads(response.data.decode('utf-8')).get('order')[0]['status'], "pending")
 
     def test_get_specific_order_not_found(self):
         """Test specific order not found."""
         response = self.app.get(BASE_URL + "/98989")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.data).get('message'), "Cannot find this order")
+        self.assertEqual(json.loads(response.data.decode('utf-8')).get('message'), "Cannot find this order")
 
     def test_update_specific_order(self):
         """Test update specific order."""
@@ -53,14 +53,14 @@ class OrderTest(unittest.TestCase):
         self.app.post(BASE_URL, json=self.test_order)
         response = self.app.put(BASE_URL + "/1", json=status)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.data).get('data')[0]['status'], "completed")
+        self.assertEqual(json.loads(response.data.decode('utf-8')).get('data')[0]['status'], "completed")
 
     def test_update_specific_order_not_found(self):
         """Test for updating order not found."""
         status = {"status": "completed"}
         response = self.app.put(BASE_URL + "/98989", json=status)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.data).get('error'), "Unable to find this order")
+        self.assertEqual(json.loads(response.data.decode('utf-8')).get('error'), "Unable to find this order")
 
     def tearDown(self):
         """Destroy variable test_order."""
