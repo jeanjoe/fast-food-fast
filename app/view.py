@@ -1,3 +1,4 @@
+"""Orders API endpoints."""
 from flask import Flask, jsonify, request
 from app.manage import Order, ManageOrder
 
@@ -27,7 +28,8 @@ def add_order():
     #Validate duplicates
     if manage_orders.search_duplicate_order(get_input['client_id'], get_input['menu_id']):
         return jsonify({"error": "This order has already been registered"}), 200
-    saved_order = orders.add_order(get_input['menu_id'], get_input['client_id'], get_input['location'], get_input['quantity'])
+    saved_order = orders.add_order(
+        get_input['menu_id'], get_input['client_id'], get_input['location'], get_input['quantity'])
     if not saved_order:
         return jsonify({"error": "Unable process your order"}), 200
     return jsonify({"data": saved_order}), 201
@@ -77,5 +79,4 @@ def delete_order(order_id):
     remove_order = orders.delete_order(order_id)
     if remove_order:
         return jsonify({"message": "Order deleted successfuly"}), 200
-    else:
-        return jsonify({"error",  "Unable to delete this order"}), 200
+    return jsonify({"error", "Unable to delete this order"}), 200

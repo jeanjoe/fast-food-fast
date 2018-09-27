@@ -1,10 +1,12 @@
-from flask import request
+"""Manage orders."""
 from datetime import datetime
+from flask import request
 
 menu_items = []
 orders = []
 
 class Order:
+    """Class to manipulate order."""
 
     def __init__(self):
         self.menu_items = menu_items
@@ -29,14 +31,14 @@ class Order:
         return order
 
     def last_order_id(self):
+        """Get last Id increment by 1."""
         if len(self.orders) < 1:
             return 1
-        else:
-            return self.orders[-1]['id'] + 1
+        return self.orders[-1]['id'] + 1
 
     def update_order_status(self, order_id, status):
         """Search order and update status if found."""
-        order = self.search_order(order_id)        
+        order = self.search_order(order_id)
         if order:
             order[0].update({'status': status})
             return order
@@ -44,7 +46,7 @@ class Order:
 
     def update_order_details(self, order_id, location, quantity):
         """Search order and update details if found."""
-        order = self.search_order(order_id)        
+        order = self.search_order(order_id)
         if order:
             order[0].update({'location': location, 'quantity': quantity})
             return order
@@ -68,7 +70,7 @@ class ManageOrder:
     def __init__(self):
         self.order = Order()
         self.orders = orders
-   
+
     def validate_input(self, validation_data=list):
         """Search order and update status if found."""
         error_message = []
