@@ -43,6 +43,7 @@ omit =
     */ctypes/*
     */html.py
     */html/entities.py
+    */html/__init__.py
     */multiprocessing/connection.py
     */multiprocessing/util.py 
     */numbers.py
