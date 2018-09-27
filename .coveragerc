@@ -12,6 +12,8 @@ omit =
     */tests/mock.py
     */app/__init__.py
     */app/mock.py
+    */app/manage.py
+    */app/view.py
     */api/*
     */.vscode/*
     */certifi/*
