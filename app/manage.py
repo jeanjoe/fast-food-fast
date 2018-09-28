@@ -89,7 +89,7 @@ class ManageOrder:
     def search_duplicate_order(self, client_id, menu_id):
         """Search dulpicate order."""
         for item in self.orders:
-            if item['client_id'] == int(client_id) and item['menu_id'] == int(menu_id) and item['status'] == 'pending':
+            if item['client_id'] == client_id and item['menu_id'] == menu_id and item['status'] == 'pending':
                 return True
         return False
 
