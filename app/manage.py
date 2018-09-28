@@ -92,3 +92,13 @@ class ManageOrder:
             if item['client_id'] == int(client_id) and item['menu_id'] == int(menu_id) and item['status'] == 'pending':
                 return True
         return False
+
+    def validate_datatype(self, data_type, data=list):
+        for item in data:
+            try:
+                int(item)
+                # return data[item]
+            except ValueError as error:
+                return "Oops {}. Enter a valid value in {}".format(str(error), item)
+
+        return None

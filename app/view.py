@@ -22,9 +22,15 @@ def add_order():
     validation = manage_orders.validate_input(['menu_id', 'client_id', 'location', 'quantity'])
     if validation:
         return jsonify({"message": 'Validation error', "errors": validation}), 200
-
+    
     #If Validation passes, add to list
     get_input = request.get_json()
+
+    validate_datatype = manage_orders.validate_datatype(
+        int, [get_input['menu_id'], get_input['client_id'], get_input['quantity'] ])
+    if validate_datatype:
+        return jsonify({"data_type_error": validate_datatype }), 200
+
     #Validate duplicates
     if manage_orders.search_duplicate_order(get_input['client_id'], get_input['menu_id']):
         return jsonify({"error": "This order has already been registered"}), 200
@@ -62,6 +68,10 @@ def update_order_details(order_id):
     validation = manage_orders.validate_input(['location', 'quantity'])
     if validation:
         return jsonify({"error": validation}), 200
+
+    validate_datatype = manage_orders.validate_datatype(int, [get_input['quantity']])
+    if validate_datatype:
+        return jsonify({"data_type_error": validate_datatype })
 
     update_details = orders.update_order_details(
         order_id, get_input['location'], get_input['quantity'])
