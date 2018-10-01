@@ -1,5 +1,6 @@
 """Orders API endpoints."""
 from app import app
+from app.models.user import User
 from flask import jsonify, request
 from .manage import Order, ManageOrder
 from app.models.migration import Migration
@@ -7,6 +8,7 @@ from app.models.migration import Migration
 migration = Migration()
 migration.create_tables()
 
+user = User()
 orders = Order()
 manage_orders = ManageOrder()
 
@@ -14,6 +16,27 @@ manage_orders = ManageOrder()
 def index():
     """API start route."""
     return jsonify({'message': 'Fast-food-fast API endpoints. Navigate to api/v1/orders'}), 200
+
+
+@app.route('/api/v1/users/create', methods=['POST'])
+def register_user():
+    validation = manage_orders.validate_input(
+        ['first_name', 'last_name', 'email', 'phone', 'password', 'confirm_password'])
+    if validation:
+        return jsonify({"message": 'Validation error', "errors": validation}), 200
+    
+    #If Validation passes, add to list
+    get_input = request.get_json()
+    search_duplicate_email = user.search_user('email', get_input['email'])
+    if search_duplicate_email:
+        return jsonify(fiel="email", message="This email address is already registered"), 200
+    save_user = user.register_user(
+        get_input['first_name'], get_input['last_name'], get_input['email'], get_input['phone'],
+        get_input['password']
+    )
+    if save_user is True:
+        return jsonify({"message": "User added successfuly"}), 200
+    return jsonify({"error": "Unable to register this user", "reason": save_user}), 200
 
 @app.route('/api/v1/orders', methods=['GET'])
 def get_all_orders():
