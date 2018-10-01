@@ -1,8 +1,12 @@
 """Orders API endpoints."""
-from flask import Flask, jsonify, request
-from app.manage import Order, ManageOrder
+from app import app
+from flask import jsonify, request
+from .manage import Order, ManageOrder
+from app.models.migration import Migration
 
-app = Flask(__name__)
+migration = Migration()
+migration.create_tables()
+
 orders = Order()
 manage_orders = ManageOrder()
 
