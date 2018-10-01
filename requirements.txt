@@ -10,3 +10,4 @@ coveralls==1.5.0
 pytest-cov==2.6.0
 Werkzeug==0.14.1
 psycopg2==2.7.5
+flask-jwt-extended==3.13.1

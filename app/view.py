@@ -2,8 +2,13 @@
 from app import app
 from app.models.user import User
 from flask import jsonify, request
+from flask_jwt_extended import (JWTManager, jwt_required, create_access_token, get_jwt_identity)
 from .manage import Order, ManageOrder
 from app.models.migration import Migration
+
+app.config.from_object('config')
+app.config['SECRET_KEY']
+jwt = JWTManager(app)
 
 migration = Migration()
 migration.create_tables()
@@ -17,8 +22,7 @@ def index():
     """API start route."""
     return jsonify({'message': 'Fast-food-fast API endpoints. Navigate to api/v1/orders'}), 200
 
-
-@app.route('/api/v1/users/create', methods=['POST'])
+@app.route('/api/v1/users/register', methods=['POST'])
 def register_user():
     validation = manage_orders.validate_input(
         ['first_name', 'last_name', 'email', 'phone', 'password', 'confirm_password'])
@@ -38,6 +42,17 @@ def register_user():
         return jsonify({"message": "User added successfuly"}), 200
     return jsonify({"error": "Unable to register this user", "reason": save_user}), 200
 
+@app.route('/api/v1/users/login', methods=['POST'])
+def login_user():
+    validation = manage_orders.validate_input(['email', 'password'])
+    if validation:
+        return jsonify({"message": 'Validation error', "errors": validation}), 400
+    get_input = request.get_json()
+    user_login = user.signin_user(get_input['email'], get_input['password'])
+    if user_login:
+        return jsonify(user=create_access_token(user_login)), 200
+    return jsonify(error="Wrong Email or password"), 401
+    
 @app.route('/api/v1/orders', methods=['GET'])
 def get_all_orders():
     """Get all orders"""
