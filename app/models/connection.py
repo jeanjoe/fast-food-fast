@@ -1,5 +1,6 @@
 import psycopg2
-from app.view import app
+from psycopg2.extras import RealDictCursor
+from app import app
 from config import DevelopmentConfig
 
 app.config.from_object(DevelopmentConfig)
@@ -17,6 +18,7 @@ class DatabaseConnection:
             )
             self.connection.autocommit = True
             self.cursor = self.connection.cursor()
+            self.dict_cursor = self.connection.cursor(cursor_factory=RealDictCursor)
             
         except Exception as identifier:
             print(identifier)

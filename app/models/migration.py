@@ -10,22 +10,13 @@ class Migration(DatabaseConnection):
         try:
             query = [
             """
-            CREATE TABLE IF NOT EXISTS ADMINS (
-                ID SERIAL PRIMARY KEY,
-                FIRSTNAME VARCHAR(50) NOT NULL,
-                LASTNAME VARCHAR(50) NOT NULL,
-                EMAIL VARCHAR(100) NOT NULL,
-                PASSWORD VARCHAR(100) NOT NULL,
-                CREATED_AT TIMESTAMP
-            )
-            """,
-            """
             CREATE TABLE IF NOT EXISTS USERS (
                 ID SERIAL PRIMARY KEY,
                 FIRST_NAME VARCHAR(50) NOT NULL,
                 LAST_NAME VARCHAR(50) NOT NULL,
                 EMAIL VARCHAR(50) NOT NULL UNIQUE,
                 PHONE VARCHAR(20) NULL,
+                ACCOUNT_TYPE VARCHAR(50) NOT NULL, 
                 PASSWORD VARCHAR(191) NOT NULL,
                 CREATED_AT TIMESTAMP
             )
@@ -34,10 +25,11 @@ class Migration(DatabaseConnection):
             CREATE TABLE IF NOT EXISTS MENUS (
                 ID SERIAL PRIMARY KEY,  
                 ADMIN_ID INT NOT NULL,
-                FOREIGN KEY (ADMIN_ID) REFERENCES ADMINS (ID),
+                FOREIGN KEY (ADMIN_ID) REFERENCES USERS (ID),
                 TITLE VARCHAR(100) NOT NULL, 
                 PRICE INT NOT NULL,
                 DESCRIPTION TEXT,
+                STATUS BOOLEAN DEFAULT TRUE,
                 CREATED_AT TIMESTAMP 
             )
             """,
@@ -50,17 +42,17 @@ class Migration(DatabaseConnection):
                 FOREIGN KEY (USER_ID) REFERENCES USERS (ID),
                 LOCATION VARCHAR(50) NOT NULL, 
                 QUANTITY INT NOT NULL,
-                APROVED_AT TIMESTAMP DEFAULT NULL,
+                APPROVED_AT TIMESTAMP DEFAULT NULL,
                 APPROVED_BY INT NULL,
                 STATUS VARCHAR(50) NOT NULL,
-                FOREIGN KEY (APPROVED_BY) REFERENCES ADMINS (ID),
+                FOREIGN KEY (APPROVED_BY) REFERENCES USERS (ID),
                 CREATED_AT TIMESTAMP 
             )
             """
             ]
             for query in query:
                 self.cursor.execute(query)
-                # print("Table {0} migrated successfuly.".format(query.split()[2].strip()))
+                
         except Exception as error:
             print("Error while migrating table => {}".format(str(error)))
         finally:
