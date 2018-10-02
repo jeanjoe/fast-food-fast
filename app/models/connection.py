@@ -1,7 +1,8 @@
 import psycopg2
 from app.view import app
+from config import DevelopmentConfig
 
-app.config.from_object('config')
+app.config.from_object(DevelopmentConfig)
 
 class DatabaseConnection:
 
