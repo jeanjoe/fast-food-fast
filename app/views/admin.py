@@ -11,27 +11,25 @@ menu = MenuModel()
 manage_orders = ManageOrder()
 order_model = OrderModel()
 
-@app.route('/api/v1/admin/register', methods=['POST'])
+@app.route('/api/v1/admins/register', methods=['POST'])
 def register_admin():
     validation = manage_orders.validate_input(
-        ['first_name', 'last_name', 'email', 'phone', 'password', 'confirm_password'])
+        ['first_name', 'last_name', 'email', 'phone', 'password'])
     if validation:
-        return jsonify({"message": 'Validation error', "errors": validation}), 200
+        return jsonify({"message": 'Validation error', "errors": validation}), 400
     
     #If Validation passes, add to list
     get_input = request.get_json()
     search_duplicate_email = user.search_user('email', get_input['email'])
     if search_duplicate_email:
         return jsonify(field="email", message="This email address is already registered"), 400
-    save_user = user.register_user(
+    user.register_user(
         get_input['first_name'], get_input['last_name'], get_input['email'], get_input['phone'],
         get_input['password'], "admin"
     )
-    if save_user is True:
-        return jsonify({"message": "User added successfuly"}), 201
-    return jsonify({"error": "Unable to register this user", "reason": save_user}), 200
+    return jsonify({"message": "User added successfuly"}), 201
 
-@app.route('/api/v1/admin/login', methods=['POST'])
+@app.route('/api/v1/admins/login', methods=['POST'])
 def login_admin():
     """Login Admin."""
     validation = manage_orders.validate_input(['email', 'password'])

@@ -52,21 +52,25 @@ class Migration(DatabaseConnection):
             ]
             for query in query:
                 self.cursor.execute(query)
+
+            return True
                 
         except Exception as error:
-            print("Error while migrating table => {}".format(str(error)))
-        finally:
-            self.connection.close()
+            return str(error)
 
     def drop_table(self, tables=list):
         """Drop list of tables."""
         for table in tables:
-            try:
-                query = """
-                DROP TABLE IF EXISTS {0} CASCADE
-                """.format(table)
-                self.cursor.execute(query)
-                print("Table {0} dropped successfuly".format(table))
-            except Exception as error:
-                print("Error while dropping table {0} => {1}".format(table, str(error)))
+            query = """
+            DROP TABLE IF EXISTS {0} CASCADE
+            """.format(table)
+            self.cursor.execute(query)
         self.connection.close()
+        return True
+    
+    def truncate_tables(self, tables=list):
+        """Truncate tables."""
+        for table in tables:
+            query = """TRUNCATE TABLE {} CASCADE""".format(table)
+            self.cursor.execute(query)
+        return True

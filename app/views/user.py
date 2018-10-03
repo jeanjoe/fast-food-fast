@@ -15,28 +15,20 @@ manage_orders = ManageOrder()
 def register_user():
     """Register User."""
     validation = manage_orders.validate_input(
-        ['first_name', 'last_name', 'email', 'phone', 'password', 'confirm_password'])
+        ['first_name', 'last_name', 'email', 'phone', 'password'])
     if validation:
-        return jsonify({"message": 'Validation error', "errors": validation}), 200
+        return jsonify({"message": 'Validation error', "errors": validation}), 400
     
     #If Validation passes, add to list
     get_input = request.get_json()
     search_duplicate_email = user.search_user('email', get_input['email'])
     if search_duplicate_email:
         return jsonify(field="email", message="This email address is already registered"), 200
-    save_user = user.register_user(
+    user.register_user(
         get_input['first_name'], get_input['last_name'], get_input['email'], get_input['phone'],
         get_input['password'], "client"
     )
-    if save_user is True:
-        return jsonify({"message": "User added successfuly"}), 201
-    return jsonify({"error": "Unable to register this user", "reason": save_user}), 200
-
-@app.route('/protected')
-@jwt_required
-def protected():
-    # current_user = get_jwt_identity()
-    return jsonify(user= get_jwt_identity()[0]['account_type'])
+    return jsonify({"message": "User added successfuly"}), 201
 
 @app.route('/api/v1/users/login', methods=['POST'])
 def login_user():
