@@ -5,11 +5,10 @@ python:
 
 services:
   - postgresql
-  
+
 #Create postgresql database
 before_script:
   - psql -c "CREATE DATABASE fast_foods_fast;" -U postgres
-  - psql -c "CREATE USER postgres WITH PASSWORD 'manben';" -U postgres
 
 # install dependencies
 install: 
