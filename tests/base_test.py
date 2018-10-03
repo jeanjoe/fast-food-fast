@@ -15,6 +15,7 @@ class BaseTest(unittest.TestCase, DatabaseConnection):
     def setUp(self):
         self.base_url = BASE_URL
         self.app = app.test_client()
+        migration.create_tables()
 
     def tearDown(self):
         self.migration = migration.truncate_tables(['orders', 'menus', 'users'])
