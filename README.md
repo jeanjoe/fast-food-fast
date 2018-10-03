@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/jeanjoe/fast-food-fast.svg?branch=api%2Fv1)](https://travis-ci.com/jeanjoe/fast-food-fast)
+[![Build Status](https://travis-ci.org/jeanjoe/fast-food-fast.svg?branch=ft-challenge-three)](https://travis-ci.org/jeanjoe/fast-food-fast)
 [![Coverage Status](https://coveralls.io/repos/github/jeanjoe/fast-food-fast/badge.svg?branch=api%2Fv1)](https://coveralls.io/github/jeanjoe/fast-food-fast?branch=api%2Fv1)
 [![Maintainability](https://api.codeclimate.com/v1/badges/128fba01502d5f70e484/maintainability)](https://codeclimate.com/github/jeanjoe/fast-food-fast/maintainability)
 
