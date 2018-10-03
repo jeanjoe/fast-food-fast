@@ -9,14 +9,12 @@ services:
 # install dependencies
 install: 
   - pip install -r requirements.txt
-  - psql -c 'create database fast_food_fast;' -U postgres
-  - export FLASK_ENV=development
+  - psql -c 'create database fast_foods_fast;' -U postgres
 
 # command to run tests
 script:
   - pytest -v --cov app --cov-report term-missing
   - coverage report
-
 
 after_success:
 - coveralls
