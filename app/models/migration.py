@@ -15,7 +15,6 @@ class Migration(DatabaseConnection):
                 FIRST_NAME VARCHAR(50) NOT NULL,
                 LAST_NAME VARCHAR(50) NOT NULL,
                 EMAIL VARCHAR(50) NOT NULL UNIQUE,
-                PHONE VARCHAR(20) NULL,
                 ACCOUNT_TYPE VARCHAR(50) NOT NULL, 
                 PASSWORD VARCHAR(191) NOT NULL,
                 CREATED_AT TIMESTAMP

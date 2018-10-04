@@ -22,3 +22,11 @@ class DatabaseConnection:
             
         except Exception as identifier:
             print(identifier)
+
+    def execute_select_all_query(self, query):
+        self.dict_cursor.execute(query)
+        return self.dict_cursor.fetchall()
+    
+    def execute_select_one_query(self, query):
+        self.dict_cursor.execute(query)
+        return self.dict_cursor.fetchone()

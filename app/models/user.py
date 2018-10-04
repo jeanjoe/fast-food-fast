@@ -7,15 +7,15 @@ class User(DatabaseConnection):
     def __init__(self):
         super().__init__()
 
-    def register_user(self, firstname, lastname, email, phone, password, account_type):
+    def register_user(self, firstname, lastname, email, password, account_type):
         query = """
-        INSERT INTO USERS (first_name, last_name, email, phone, password, account_type, created_at) 
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO USERS (first_name, last_name, email, password, account_type, created_at) 
+        VALUES (%s, %s, %s, %s, %s, %s)
         """
         self.cursor.execute(
             query,
             (
-                firstname, lastname, email, phone, generate_password_hash(password), account_type, 
+                firstname, lastname, email, generate_password_hash(password), account_type, 
                 datetime.now()
             ) 
         )
