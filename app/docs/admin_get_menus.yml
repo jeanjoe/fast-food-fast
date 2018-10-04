@@ -1,0 +1,37 @@
+Admin get all menus.
+---
+tags:
+  - Admin
+  - Menu
+  
+parameters:
+  - in: body
+    name: body
+    required: true
+    type: string
+    description: This route is used by an admin account to make get all menu items. 
+
+  - in: header
+    name: Authorization
+    description: authorization header
+    required: true
+    type: string
+    schema:
+    id: bearer
+
+responses:
+  200:
+    description: Menu Items retrieved successfully
+
+  401:
+    description: Unauthorization error
+
+security:
+  - JWT:
+      description: Provide JWT token
+      type: apikey
+      schema: bearer
+      name: Authorization
+      in: header
+      template: "Bearer {apikey}"
+      bearerFormat: JWT

@@ -1,0 +1,32 @@
+Admin get all orders.
+---
+tags:
+  - Admin 
+  - Order
+  
+parameters:
+  
+  - in: header
+    name: Authorization
+    description: authorization header
+    required: true
+    type: string
+    schema:
+    id: bearer
+
+responses:
+  200:
+    description: Orders retrieved successfully
+   
+  401:
+    description: Unauthorization error
+
+security:
+  - JWT:
+      description: Provide JWT token
+      type: apikey
+      schema: bearer
+      name: Authorization
+      in: header
+      template: "Bearer {apikey}"
+      bearerFormat: JWT
