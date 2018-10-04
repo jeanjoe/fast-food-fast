@@ -71,6 +71,6 @@ class Migration(DatabaseConnection):
     def truncate_tables(self, tables=list):
         """Truncate tables."""
         for table in tables:
-            query = """TRUNCATE TABLE {} CASCADE""".format(table)
+            query = """TRUNCATE TABLE {} RESTART IDENTITY CASCADE""".format(table)
             self.cursor.execute(query)
         return True

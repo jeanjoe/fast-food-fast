@@ -14,7 +14,7 @@ class OrderModel(DatabaseConnection):
             ({}, '{}', '{}', {}, 'New', '{}')
             """.format(menu_id, client_id, location, quantity, str(datetime.now()))
             self.cursor.execute(query)
-            return "Data Inserted Successfully"
+            return "Order Inserted Successfully"
         except Exception as error:
             return "Unable to save error {} ".format(str(error))
 

@@ -66,9 +66,8 @@ def user_add_order():
         return jsonify(error="This menu item doesn't exist in the menu list"), 404
     
     saved_order = order_model.add_order(
-        get_input['menu_id'], current_user[0]['id'], get_input['location'], get_input['quantity'])
-    if not saved_order:
-        return jsonify({"error": "Unable process your order"}), 200
+        get_input['menu_id'], current_user[0]['id'], get_input['location'], get_input['quantity']
+    )
     return jsonify({"data": saved_order}), 201
 
 @app.route('/api/v1/users/orders/<int:order_id>')
@@ -94,6 +93,4 @@ def get_current_user_orders():
     if user_type != "client":
         return jsonify({"error": "Unauthorised Access for none user accounts"}), 401
     search_result = order_model.get_all_client_orders(current_user[0]['id'])
-    if not search_result:
-        return jsonify({"message": 'Cannot find this order'}), 404
     return jsonify({"order": search_result}), 200

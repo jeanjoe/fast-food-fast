@@ -38,7 +38,7 @@ def login_admin():
     get_input = request.get_json()
     user_login = user.signin_admin(get_input['email'], get_input['password'])
     if user_login:
-        return jsonify(user_token=create_access_token([user_login]), message="Login successfully"), 200
+        return jsonify(admin_token=create_access_token([user_login]), message="Login successfully"), 200
     return jsonify(error="Wrong Email or password"), 400
 
 @app.route('/api/v1/admins/menus', methods=['POST'])
@@ -52,13 +52,11 @@ def admin_add_menu():
     if validation:
         return jsonify({"message": 'Validation error', "errors": validation}), 400
     get_input = request.get_json()
-    save_menu = menu.add_menu(
+    menu.add_menu(
         current_user[0]['id'], get_input['title'], get_input['description'], get_input['price']
     )
-    if save_menu:
-        return jsonify(menu=save_menu, message="Menu added successfuly")
-    return jsonify(error="Unable to record order")
-
+    return jsonify(message="Menu added successfuly"), 201
+    
 @app.route('/api/v1/admins/menus', methods=['GET'])
 @jwt_required
 def admin_get_menus():

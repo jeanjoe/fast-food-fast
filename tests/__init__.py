@@ -52,3 +52,9 @@ MENU_DATA = {
     "description": "All food",
     "price": 20000
 }
+
+ORDER_DATA = {
+    "menu_id": 1,
+	"location": "Makerere",
+	"quantity": 2
+}
