@@ -15,7 +15,7 @@ manage_orders = ManageOrder()
 def register_user():
     """Register User."""
     validation = manage_orders.validate_input(
-        ['first_name', 'last_name', 'email', 'phone', 'password'])
+        ['first_name', 'last_name', 'email', 'password'])
     if validation:
         return jsonify({"message": 'Validation error', "errors": validation}), 400
     
@@ -25,7 +25,7 @@ def register_user():
     if search_duplicate_email:
         return jsonify(field="email", message="This email address is already registered"), 200
     user.register_user(
-        get_input['first_name'], get_input['last_name'], get_input['email'], get_input['phone'],
+        get_input['first_name'], get_input['last_name'], get_input['email'],
         get_input['password'], "client"
     )
     return jsonify({"message": "User added successfuly"}), 201

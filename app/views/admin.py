@@ -5,6 +5,7 @@ from app.models.order import OrderModel
 from flask import jsonify, request
 from flask_jwt_extended import (JWTManager, jwt_required, create_access_token, get_jwt_identity)
 from app.manage import Order, ManageOrder
+from validate_email import validate_email
 
 user = User()
 menu = MenuModel()
@@ -14,17 +15,22 @@ order_model = OrderModel()
 @app.route('/api/v1/admins/register', methods=['POST'])
 def register_admin():
     validation = manage_orders.validate_input(
-        ['first_name', 'last_name', 'email', 'phone', 'password'])
+        ['first_name', 'last_name', 'email', 'password'])
     if validation:
         return jsonify({"message": 'Validation error', "errors": validation}), 400
     
     #If Validation passes, add to list
     get_input = request.get_json()
-    search_duplicate_email = user.search_user('email', get_input['email'])
+    if not validate_email(get_input['email']):
+        return jsonify({"error": "Invalid email address"}), 200
+
+    search_duplicate_email = user.search_user('email', get_input['email'].strip())
     if search_duplicate_email:
         return jsonify(field="email", message="This email address is already registered"), 400
     user.register_user(
-        get_input['first_name'], get_input['last_name'], get_input['email'], get_input['phone'],
+        get_input['first_name'].strip(), 
+        get_input['last_name'].strip(), 
+        get_input['email'].strip(), 
         get_input['password'], "admin"
     )
     return jsonify({"message": "User added successfuly"}), 201
@@ -103,8 +109,11 @@ def update_specific_order_status(order_id):
     get_input = request.get_json()
     validation = manage_orders.validate_input(['status'])
     if validation:
-        return jsonify({"error": validation}), 200
+        return jsonify({"error": validation}), 400
 
-    update_order = user.admin_update_order(current_user[0]['id'], order_id, get_input['status'])
+    if get_input['status'].strip() not in ['COMPLETED', 'ACCEPTED', 'PROCESSING']:
+        return jsonify({"error": "Status must be COMPLETED, ACCEPTED OR PROCESSING"}), 200
+
+    update_order = user.admin_update_order(current_user[0]['id'], order_id, get_input['status'].strip())
     if update_order is True:
-        return jsonify({"message": "order updated successfuly"}), 200
+        return jsonify({"message": "Order status updated successfuly"}), 200

@@ -139,3 +139,22 @@ class UserTest(BaseTest):
         )
         assert response.status_code == 404
         self.assertEqual(json.loads(response.data)['message'], "Cannot find this order")
+    def test_user_get_specific_order(self):
+        token = self.return_user_token()
+        admin_token = self.return_admin_token()
+        self.app.post(
+            self.base_url + 'admins/menus', 
+            headers={"Authorization": "Bearer " + admin_token}, 
+            json=MENU_DATA
+        )
+        self.app.post(
+            self.base_url + "users/orders", 
+            json=ORDER_DATA,
+            headers={"Authorization": "Bearer " + token }
+        )
+        response = self.app.get(
+            self.base_url + "users/orders/1",
+            headers={"Authorization": "Bearer " + token }
+        )
+        assert response.status_code == 200
+        self.assertIsInstance(json.loads(response.data)['order'], list)

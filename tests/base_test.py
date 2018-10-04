@@ -1,16 +1,17 @@
 """Tests for API endpoints."""
 import unittest
-import random
 import json
 from app import app
-from app.models.connection import DatabaseConnection
 from app.models.migration import Migration
-from . import REGISTER_ADMIN, ADMIN_LOGIN, REGISTER_USER, USER_LOGIN
+from . import *
+from config import TestingConfig
+
+app.config.from_object(TestingConfig)
 
 BASE_URL = "/api/v1/"
 migration = Migration()
 
-class BaseTest(unittest.TestCase, DatabaseConnection):
+class BaseTest(unittest.TestCase):
     """Setting up testing data for Tests."""
 
     def setUp(self):
