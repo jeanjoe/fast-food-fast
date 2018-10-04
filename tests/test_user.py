@@ -15,7 +15,7 @@ class UserTest(BaseTest):
         """Test successful register"""
         response = self.app.post(self.base_url + 'users/register', json=REGISTER_USER_RANDOM_EMAIL)
         self.assertEqual(response.status_code, 201)
-        assert json.loads(response.data)['message'] == "User added successfuly"
+        assert json.loads(response.data)['message'] == "User added successfully"
 
     def test_invalid_register_inputs(self):
         """Test register without data"""

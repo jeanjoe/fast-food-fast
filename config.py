@@ -8,15 +8,15 @@ class DevelopmentConfig(Config):
     DB_USER= "postgres"
     DB_PASS= "manben"
     DB_HOST= "localhost"
-    DB_PORT= "5432"
+    DB_PORT= "5433"
 
 class TestingConfig(Config):
     DEBUG = True
     TESTING = True
 
-    DB_NAME= "fast_foods_fast"
+    DB_NAME= "fast_foods_fast_test"
     DB_USER= "postgres"
     DB_PASS= "manben"
     DB_HOST= "localhost"
-    DB_PORT= "5432"
+    DB_PORT= "5433"
     

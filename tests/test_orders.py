@@ -28,6 +28,26 @@ class OrderTest(BaseTest):
         response = self.app.put(
             self.base_url + "admins/orders/1/update",
             headers={"Authorization": "Bearer " + admin_token },
-            json={ "status": "COMPLETED"})
+            json={ "status": "Complete"}
+        )
         assert response.status_code == 200
-        assert json.loads(response.data)['message'] == "Order status updated successfuly"
+        assert json.loads(response.data)['message'] == "Order status updated successfully"
+
+    def test_admin_get_specific_order(self):
+        admin_token = self.return_admin_token()
+        token = self.return_user_token()
+        self.app.post(
+            self.base_url + 'admins/menus', 
+            headers={"Authorization": "Bearer " + admin_token}, 
+            json=MENU_DATA
+        )
+        self.app.post(
+            self.base_url + "users/orders", 
+            json=ORDER_DATA,
+            headers={"Authorization": "Bearer " + token }
+        )
+        response = self.app.get(
+            self.base_url + "admins/orders/2",
+            headers={"Authorization": "Bearer " + admin_token }
+        )
+        assert response.status_code == 200

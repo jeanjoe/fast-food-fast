@@ -20,7 +20,7 @@ class MenuTest(BaseTest):
             json=MENU_DATA
         )
         self.assertEqual(response.status_code, 201)
-        assert json.loads(response.data)['message'] == "Menu added successfuly"
+        assert json.loads(response.data)['message'] == "Menu added successfully"
 
     def test_get_menus_without_token(self):
         """Test for get menus without token."""

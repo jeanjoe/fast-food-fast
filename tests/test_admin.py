@@ -9,7 +9,7 @@ class AdminTest(BaseTest):
         """Test successful admin register."""
         response = self.app.post(self.base_url + 'admins/register', json=REGISTER_USER_RANDOM_EMAIL)
         self.assertEqual(response.status_code, 201)
-        assert json.loads(response.data)['message'] == "User added successfuly"
+        assert json.loads(response.data)['message'] == "Admin registered successfully"
 
     def test_invalid_register_inputs(self):
         """Test admin register without data"""
