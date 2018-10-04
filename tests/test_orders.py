@@ -28,6 +28,6 @@ class OrderTest(BaseTest):
         response = self.app.put(
             self.base_url + "admins/orders/1/update",
             headers={"Authorization": "Bearer " + admin_token },
-            json={ "status": "Completed"})
+            json={ "status": "COMPLETED"})
         assert response.status_code == 200
         assert json.loads(response.data)['message'] == "Order status updated successfuly"
