@@ -4,9 +4,6 @@ import json
 from app import app
 from app.models.migration import Migration
 from . import *
-from config import TestingConfig
-
-app.config.from_object(TestingConfig)
 
 BASE_URL = "/api/v1/"
 migration = Migration()
