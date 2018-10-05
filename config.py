@@ -1,6 +1,7 @@
 class Config():
     DEBUG = False
     SECRET_KEY="whsdyuhgshji90woiryh3ikwgrdn9w7eui3kgwbnidjhnsmufycneh"
+    DB_PORT= "5432"
 
 class DevelopmentConfig(Config):
     DEBUG = True
@@ -8,7 +9,7 @@ class DevelopmentConfig(Config):
     DB_USER= "postgres"
     DB_PASS= "manben"
     DB_HOST= "localhost"
-    DB_PORT= "5433"
+    DB_PORT= "5432"
 
 class TestingConfig(Config):
     DEBUG = True
