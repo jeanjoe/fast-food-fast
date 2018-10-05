@@ -1,11 +1,11 @@
-"""Orders API endpoints."""
-from app import app
+"""Initialize modules"""
+from flask_jwt_extended import (JWTManager)
 from flask import jsonify
 from app.models.migration import Migration
-from flask_jwt_extended import (JWTManager)
+from app import app
 
 app.config.from_object('config')
 app.config['SECRET_KEY']
-jwt = JWTManager(app)
-db = Migration()
-db.create_tables()
+JWT = JWTManager(app)
+DB = Migration()
+DB.create_tables()

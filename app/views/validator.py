@@ -14,7 +14,6 @@ class InputValidator:
                 input[data]
                 if not input[data]:
                     raise Exception(data)
-
             except:
                 error_message.append({'field': data, 'message': data + ' is required'})
 

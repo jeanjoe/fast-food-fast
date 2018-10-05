@@ -1,12 +1,13 @@
+"""Endpoints for admin."""
+from flasgger import swag_from
+from validate_email import validate_email
+from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
+from flask import jsonify, request
 from app import app
 from app.models.user import User
 from app.models.menu import MenuModel
 from app.models.order import OrderModel
-from flask import jsonify, request
-from flask_jwt_extended import (JWTManager, jwt_required, create_access_token, get_jwt_identity)
 from .validator import InputValidator
-from validate_email import validate_email
-from flasgger import swag_from
 
 user = User()
 menu = MenuModel()
@@ -16,11 +17,12 @@ order_model = OrderModel()
 @app.route('/api/v1/admins/register', methods=['POST'])
 @swag_from('../docs/admin_signup.yml')
 def register_admin():
+    """Register new admin."""
     validation = input_validator.validate_input(
         ['first_name', 'last_name', 'email', 'password'])
     if validation:
         return jsonify({"message": 'Validation error', "errors": validation}), 400
-    
+
     #If Validation passes, add to list
     get_input = request.get_json()
     if not validate_email(get_input['email']):
@@ -28,11 +30,14 @@ def register_admin():
 
     search_duplicate_email = user.search_user('email', get_input['email'].strip())
     if search_duplicate_email:
-        return jsonify(field="email", message="This email address is already registered"), 400
+        return jsonify(
+            field="email",
+            message="This email address is already registered"
+        ), 400
     user.register_user(
-        get_input['first_name'].strip(), 
-        get_input['last_name'].strip(), 
-        get_input['email'].strip(), 
+        get_input['first_name'].strip(),
+        get_input['last_name'].strip(),
+        get_input['email'].strip(),
         get_input['password'], "admin"
     )
     return jsonify({"message": "Admin registered successfully"}), 201
@@ -47,13 +52,17 @@ def login_admin():
     get_input = request.get_json()
     user_login = user.signin_admin(get_input['email'], get_input['password'])
     if user_login:
-        return jsonify(admin_token=create_access_token([user_login]), message="Login successfully"), 200
+        return jsonify(
+            admin_token=create_access_token([user_login]),
+            message="Login successfully"
+        ), 200
     return jsonify(error="Wrong Email or password"), 400
 
 @app.route('/api/v1/admins/menus', methods=['POST'])
 @jwt_required
 @swag_from('../docs/admin_add_menu.yml')
 def admin_add_menu():
+    """Admin to add new menu item."""
     current_user = get_jwt_identity()
     user_type = current_user[0]['account_type']
     if user_type != "admin":
@@ -63,14 +72,18 @@ def admin_add_menu():
         return jsonify({"message": 'Validation error', "errors": validation}), 400
     get_input = request.get_json()
     menu.add_menu(
-        current_user[0]['id'], get_input['title'], get_input['description'], get_input['price']
+        current_user[0]['id'],
+        get_input['title'],
+        get_input['description'],
+        get_input['price']
     )
     return jsonify(message="Menu added successfully"), 201
-    
+
 @app.route('/api/v1/admins/menus', methods=['GET'])
 @jwt_required
 @swag_from('../docs/admin_get_menus.yml')
 def admin_get_menus():
+    """Admin endpoint for getting all menus."""
     current_user = get_jwt_identity()
     user_type = current_user[0]['account_type']
     if user_type != "admin":
@@ -82,6 +95,7 @@ def admin_get_menus():
 @jwt_required
 @swag_from('../docs/admin_get_a_menu.yml')
 def admin_get_single_menu(menu_id):
+    """Admin endpoint for getting a single menu."""
     current_user = get_jwt_identity()
     user_type = current_user[0]['account_type']
     if user_type != "admin":
@@ -120,11 +134,16 @@ def update_specific_order_status(order_id):
         return jsonify({"error": validation}), 400
 
     if get_input['status'].strip() not in ['Processing', 'Cancelled', 'Complete']:
-        return jsonify({"error": "Status must be Processing, Cancelled or Complete"}), 400
+        return jsonify({
+            "error": "Status must be Processing, Cancelled or Complete"
+        }), 400
 
-    update_order = user.admin_update_order(current_user[0]['id'], order_id, get_input['status'].strip())
-    if update_order is True:
-        return jsonify({"message": "Order status updated successfully"}), 200
+    user.admin_update_order(
+        current_user[0]['id'],
+        order_id,
+        get_input['status'].strip()
+    )
+    return jsonify({"message": "Order status updated successfully"}), 200
 
 @app.route('/api/v1/admins/orders/<int:order_id>')
 @jwt_required

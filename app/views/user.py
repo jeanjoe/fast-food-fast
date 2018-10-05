@@ -1,9 +1,10 @@
+"""Handle user api endpoints."""
 from app import app
 from app.models.user import User
 from app.models.order import OrderModel
 from app.models.menu import MenuModel
 from flask import jsonify, request
-from flask_jwt_extended import (JWTManager, jwt_required, create_access_token, get_jwt_identity)
+from flask_jwt_extended import (jwt_required, create_access_token, get_jwt_identity)
 from .validator import InputValidator
 from validate_email import validate_email
 from flasgger import swag_from
@@ -21,7 +22,7 @@ def register_user():
         ['first_name', 'last_name', 'email', 'password'])
     if validation:
         return jsonify({"message": 'Validation error', "errors": validation}), 400
-    
+
     #If Validation passes, add to list
     get_input = request.get_json()
     if not validate_email(get_input['email']):
@@ -73,9 +74,12 @@ def user_add_order():
     search_menu = menu.get_all_single_menu(get_input['menu_id'])
     if not search_menu:
         return jsonify(error="This menu item doesn't exist in the menu list"), 404
-    
+
     saved_order = order_model.add_order(
-        get_input['menu_id'], current_user[0]['id'], get_input['location'], get_input['quantity']
+        get_input['menu_id'],
+        current_user[0]['id'],
+        get_input['location'],
+        get_input['quantity']
     )
     return jsonify({"data": saved_order}), 201
 
@@ -89,7 +93,10 @@ def get_user_specific_order(order_id):
     if user_type != "client":
         return jsonify({"error": "Unauthorised Access for none user accounts"}), 401
 
-    search_result = order_model.get_specific_client_order( current_user[0]['id'], order_id)
+    search_result = order_model.get_specific_client_order( 
+        current_user[0]['id'], 
+        order_id
+    )
     if not search_result:
         return jsonify({"message": 'Cannot find this order'}), 404
     return jsonify({"order": search_result}), 200

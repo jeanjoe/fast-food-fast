@@ -1,3 +1,4 @@
+"""Create Dummy Data for tests."""
 import random
 
 REGISTER_USER = {
@@ -52,6 +53,6 @@ MENU_DATA = {
 
 ORDER_DATA = {
     "menu_id": 1,
-	"location": "Makerere",
-	"quantity": 2
+    "location": "Makerere",
+    "quantity": 2
 }

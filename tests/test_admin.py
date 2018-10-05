@@ -1,9 +1,13 @@
 """Menu Tests for menu API endpoints."""
-from tests.base_test import BaseTest
 import json
-from . import (ADMIN_LOGIN, WRONG_USER_LOGIN, REGISTER_ADMIN, REGISTER_ADMIN, REGISTER_USER_RANDOM_EMAIL)
+from tests.base_test import BaseTest
+from . import (
+    ADMIN_LOGIN, WRONG_USER_LOGIN,
+    REGISTER_ADMIN, REGISTER_USER_RANDOM_EMAIL
+)
 
 class AdminTest(BaseTest):
+    """Test Admin endpoints."""
 
     def test_user_register(self):
         """Test successful admin register."""
@@ -43,9 +47,9 @@ class AdminTest(BaseTest):
         response = self.app.post(self.base_url + 'admins/login', json=WRONG_USER_LOGIN)
         self.assertEqual(response.status_code, 400)
         assert json.loads(response.data)['error'] == "Wrong Email or password"
-    
+
     def test_admin_update_order_status_without_token(self):
         """Test for update order status without token."""
         response = self.app.put(self.base_url + 'admins/orders/1/update')
         self.assertEqual(response.status_code, 401)
-        assert json.loads(response.data)['msg'] == "Missing Authorization Header" 
+        assert json.loads(response.data)['msg'] == "Missing Authorization Header"

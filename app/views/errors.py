@@ -1,18 +1,23 @@
-from app import app
+"""Handle Server error."""
 from flask import jsonify
+from app import app
 
 @app.errorhandler(400)
-def bad_reguset(e):
+def bad_reguset():
+    """Return Bad Request."""
     return jsonify(error="Bad Request"), 400
 
 @app.errorhandler(404)
-def page_not_found(e):
+def page_not_found():
+    """Return Page not found"""
     return jsonify(error="Page Not Found error."), 404
 
 @app.errorhandler(500)
-def internal_server_error(e):
+def internal_server_error():
+    """Internal server error."""
     return jsonify(error="Internal server error."), 500
 
 @app.errorhandler(405)
-def method_not_allowed(e):
+def method_not_allowed():
+    """Return method, not allowed"""
     return jsonify(error="Method not allowed."), 405

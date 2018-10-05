@@ -1,13 +1,12 @@
-from app.models.connection import DatabaseConnection
+"""Manage users."""
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from .connection import DatabaseConnection
 
 class User(DatabaseConnection):
-
-    def __init__(self):
-        super().__init__()
-
+    """Manage user DB interaction."""
     def register_user(self, firstname, lastname, email, password, account_type):
+        """Register users."""
         query = """
         INSERT INTO USERS (first_name, last_name, email, password, account_type, created_at) 
         VALUES (%s, %s, %s, %s, %s, %s)
@@ -15,13 +14,14 @@ class User(DatabaseConnection):
         self.cursor.execute(
             query,
             (
-                firstname, lastname, email, generate_password_hash(password), account_type, 
+                firstname, lastname, email, generate_password_hash(password), account_type,
                 datetime.now()
-            ) 
+            )
         )
         return True
 
     def search_user(self, field, data):
+        """Execute search."""
         query = """
         SELECT * FROM USERS WHERE {} = '{}'
         """.format(field, data)
@@ -29,7 +29,7 @@ class User(DatabaseConnection):
         return self.dict_cursor.fetchone()
 
     def signin_user(self, email, password):
-        """Sign in a user with email and password."""
+        """Sign in a user with the"""
         query = """
         SELECT * FROM USERS WHERE email= '{}' AND account_type='client'
         """.format(email)

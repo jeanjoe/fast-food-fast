@@ -1,5 +1,6 @@
-from app import app
+"""Define other routs."""
 from flask import jsonify
+from app import app
 
 @app.route('/', methods=['GET'])
 def index():
