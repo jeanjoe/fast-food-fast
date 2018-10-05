@@ -2,6 +2,7 @@
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from .connection import DatabaseConnection
+from psycopg2.extensions import AsIs
 
 class User(DatabaseConnection):
     """Manage user DB interaction."""
@@ -22,10 +23,8 @@ class User(DatabaseConnection):
 
     def search_user(self, field, data):
         """Execute search."""
-        query = """
-        SELECT * FROM USERS WHERE {} = '{}'
-        """.format(field, data)
-        self.dict_cursor.execute(query)
+        query = """SELECT * FROM USERS WHERE %s = %s"""
+        self.dict_cursor.execute(query, (AsIs(field), data))
         return self.dict_cursor.fetchone()
 
     def signin_user(self, email, password):
