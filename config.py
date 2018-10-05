@@ -13,7 +13,7 @@ class DevelopmentConfig(Config):
     DB_USER= "postgres"
     DB_PASS= "manben"
     DB_HOST= "localhost"
-    DB_PORT= "5433"
+    DB_PORT= "5432"
 
 class TestingConfig(Config):
     DEBUG = True
