@@ -29,12 +29,7 @@ class User(DatabaseConnection):
         return self.dict_cursor.fetchone()
 
     def signin_user(self, email, password):
-        """Sign in a user with the"""
-        query = """
-        SELECT * FROM USERS WHERE email= '{}' AND account_type='client'
-        """.format(email)
-        self.dict_cursor.execute(query)
-        user = self.dict_cursor.fetchone()
+        user = self.login_search(email, 'client')
         if user:
             check = self.check_password(user['password'], password)
             if check:
@@ -43,11 +38,7 @@ class User(DatabaseConnection):
 
     def signin_admin(self, email, password):
         """Sign in an admin user with email and password."""
-        query = """
-        SELECT * FROM USERS WHERE email= '{}' AND account_type='admin'
-        """.format(email)
-        self.dict_cursor.execute(query)
-        user = self.dict_cursor.fetchone()
+        user = self.login_search(email, 'admin')
         if user:
             check = self.check_password(user['password'], password)
             if check:
@@ -71,3 +62,11 @@ class User(DatabaseConnection):
         """
         self.cursor.execute(query, (status, admin_id, str(datetime.now()), order_id))
         return True
+
+    def login_search(self, email, account_type):
+        """Search login user with email."""
+        query = """
+        SELECT * FROM USERS WHERE email= %s AND account_type=%s
+        """
+        self.dict_cursor.execute(query, (email, account_type))
+        return self.dict_cursor.fetchone()

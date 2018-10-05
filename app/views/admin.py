@@ -100,7 +100,7 @@ def admin_get_single_menu(menu_id):
     user_type = current_user[0]['account_type']
     if user_type != "admin":
         return jsonify({"error": "Unauthorised Access for none ADMIN accounts"}), 401
-    get_menu = menu.get_all_single_menu(menu_id)
+    get_menu = menu.get_a_single_menu(menu_id)
     return jsonify({"message": "success", "menus": get_menu}), 200
 
 @app.route('/api/v1/admins/orders', methods=['GET'])
@@ -140,8 +140,7 @@ def update_specific_order_status(order_id):
 
     user.admin_update_order(
         current_user[0]['id'],
-        order_id,
-        get_input['status'].strip()
+        order_id, get_input['status'].strip()
     )
     return jsonify({"message": "Order status updated successfully"}), 200
 

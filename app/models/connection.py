@@ -1,5 +1,6 @@
 """Databse connection condig"""
 import psycopg2
+from psycopg2.extensions import AsIs
 from psycopg2.extras import RealDictCursor
 from app import app
 from config import DevelopmentConfig
@@ -19,13 +20,9 @@ class DatabaseConnection:
         self.connection.autocommit = True
         self.cursor = self.connection.cursor()
         self.dict_cursor = self.connection.cursor(cursor_factory=RealDictCursor)
-            
-    def execute_select_all_query(self, query):
-        """Execute select all From."""
-        self.dict_cursor.execute(query)
+
+    def select_single_column(self, table, field, value):
+        """Search specified table column with the value."""
+        query = "SELECT * FROM %s WHERE %s = %s"
+        self.dict_cursor.execute(query, (AsIs(table), AsIs(field), value))
         return self.dict_cursor.fetchall()
-    
-    def execute_select_one_query(self, query):
-        """Execute select user ad From."""
-        self.dict_cursor.execute(query)
-        return self.dict_cursor.fetchone()

@@ -71,15 +71,13 @@ def user_add_order():
     if validate_datatype:
         return jsonify({"data_type_error": validate_datatype }), 200
 
-    search_menu = menu.get_all_single_menu(get_input['menu_id'])
+    search_menu = menu.get_a_single_menu(get_input['menu_id'])
     if not search_menu:
         return jsonify(error="This menu item doesn't exist in the menu list"), 404
 
     saved_order = order_model.add_order(
-        get_input['menu_id'],
-        current_user[0]['id'],
-        get_input['location'],
-        get_input['quantity']
+        get_input['menu_id'], current_user[0]['id'],
+        get_input['location'], get_input['quantity']
     )
     return jsonify({"data": saved_order}), 201
 

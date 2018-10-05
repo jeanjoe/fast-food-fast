@@ -18,10 +18,7 @@ class OrderModel(DatabaseConnection):
 
     def get_all_client_orders(self, client_id):
         """get all client's orders."""
-        query = """SELECT * FROM ORDERS WHERE USER_ID= %s;"""
-        self.dict_cursor.execute(query, (client_id,))
-        orders = self.dict_cursor.fetchall()
-        return orders
+        return self.select_single_column('orders', 'user_id', client_id)
 
     def get_specific_client_order(self, client_id, order_id):
         """Get a specific order for a client."""
@@ -32,7 +29,4 @@ class OrderModel(DatabaseConnection):
 
     def admin_check_order(self, order_id):
         """Check an order for admin."""
-        query = """SELECT * FROM ORDERS WHERE ID= %s;"""
-        self.dict_cursor.execute(query, (order_id,))
-        order = self.dict_cursor.fetchone()
-        return order
+        return self.select_single_column('orders', 'id', order_id)
