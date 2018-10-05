@@ -14,6 +14,7 @@ menu = MenuModel()
 input_validator = InputValidator()
 order_model = OrderModel()
 
+
 @app.route('/api/v1/admins/register', methods=['POST'])
 @swag_from('../docs/admin_signup.yml')
 def register_admin():
@@ -21,26 +22,27 @@ def register_admin():
     validation = input_validator.validate_input(
         ['first_name', 'last_name', 'email', 'password'])
     if validation:
-        return jsonify({"message": 'Validation error', "errors": validation}), 400
+        return jsonify({
+            "message": 'Validation error',
+            "errors": validation
+        }), 400
 
     #If Validation passes, add to list
     get_input = request.get_json()
     if not validate_email(get_input['email']):
         return jsonify({"error": "Invalid email address"}), 200
 
-    search_duplicate_email = user.search_user('email', get_input['email'].strip())
+    search_duplicate_email = user.search_user('email',
+                                              get_input['email'].strip())
     if search_duplicate_email:
         return jsonify(
             field="email",
-            message="This email address is already registered"
-        ), 400
+            message="This email address is already registered"), 400
     user.register_user(
-        get_input['first_name'].strip(),
-        get_input['last_name'].strip(),
-        get_input['email'].strip(),
-        get_input['password'], "admin"
-    )
+        get_input['first_name'].strip(), get_input['last_name'].strip(),
+        get_input['email'].strip(), get_input['password'], "admin")
     return jsonify({"message": "Admin registered successfully"}), 201
+
 
 @app.route('/api/v1/admins/login', methods=['POST'])
 @swag_from('../docs/admin_signin.yml')
@@ -48,15 +50,18 @@ def login_admin():
     """Login Admin."""
     validation = input_validator.validate_input(['email', 'password'])
     if validation:
-        return jsonify({"message": 'Validation error', "errors": validation}), 400
+        return jsonify({
+            "message": 'Validation error',
+            "errors": validation
+        }), 400
     get_input = request.get_json()
     user_login = user.signin_admin(get_input['email'], get_input['password'])
     if user_login:
         return jsonify(
             admin_token=create_access_token([user_login]),
-            message="Login successfully"
-        ), 200
+            message="Login successfully"), 200
     return jsonify(error="Wrong Email or password"), 400
+
 
 @app.route('/api/v1/admins/menus', methods=['POST'])
 @jwt_required
@@ -66,18 +71,21 @@ def admin_add_menu():
     current_user = get_jwt_identity()
     user_type = current_user[0]['account_type']
     if user_type != "admin":
-        return jsonify({"error": "Unauthorised Access for none ADMIN accounts"}), 401
-    validation = input_validator.validate_input(['title', 'description', 'price'])
+        return jsonify({
+            "error": "Unauthorised Access for none ADMIN accounts"
+        }), 401
+    validation = input_validator.validate_input(
+        ['title', 'description', 'price'])
     if validation:
-        return jsonify({"message": 'Validation error', "errors": validation}), 400
+        return jsonify({
+            "message": 'Validation error',
+            "errors": validation
+        }), 400
     get_input = request.get_json()
-    menu.add_menu(
-        current_user[0]['id'],
-        get_input['title'],
-        get_input['description'],
-        get_input['price']
-    )
+    menu.add_menu(current_user[0]['id'], get_input['title'],
+                  get_input['description'], get_input['price'])
     return jsonify(message="Menu added successfully"), 201
+
 
 @app.route('/api/v1/admins/menus', methods=['GET'])
 @jwt_required
@@ -87,9 +95,12 @@ def admin_get_menus():
     current_user = get_jwt_identity()
     user_type = current_user[0]['account_type']
     if user_type != "admin":
-        return jsonify({"error": "Unauthorised Access for none ADMIN accounts"}), 401
+        return jsonify({
+            "error": "Unauthorised Access for none ADMIN accounts"
+        }), 401
     menus = menu.get_all_menus()
     return jsonify({"message": "success", "menus": menus}), 200
+
 
 @app.route('/api/v1/admins/menus/<int:menu_id>', methods=['GET'])
 @jwt_required
@@ -99,9 +110,12 @@ def admin_get_single_menu(menu_id):
     current_user = get_jwt_identity()
     user_type = current_user[0]['account_type']
     if user_type != "admin":
-        return jsonify({"error": "Unauthorised Access for none ADMIN accounts"}), 401
+        return jsonify({
+            "error": "Unauthorised Access for none ADMIN accounts"
+        }), 401
     get_menu = menu.get_a_single_menu(menu_id)
     return jsonify({"message": "success", "menus": get_menu}), 200
+
 
 @app.route('/api/v1/admins/orders', methods=['GET'])
 @jwt_required
@@ -111,8 +125,11 @@ def get_all_orders():
     current_user = get_jwt_identity()
     user_type = current_user[0]['account_type']
     if user_type != "admin":
-        return jsonify({"error": "Unauthorised Access for none ADMIN accounts"}), 401
+        return jsonify({
+            "error": "Unauthorised Access for none ADMIN accounts"
+        }), 401
     return jsonify({'orders': user.admin_get_orders()}), 200
+
 
 @app.route('/api/v1/admins/orders/<int:order_id>/update', methods=['PUT'])
 @jwt_required
@@ -122,7 +139,9 @@ def update_specific_order_status(order_id):
     current_user = get_jwt_identity()
     user_type = current_user[0]['account_type']
     if user_type != "admin":
-        return jsonify({"error": "Unauthorised Access for none ADMIN accounts"}), 401
+        return jsonify({
+            "error": "Unauthorised Access for none ADMIN accounts"
+        }), 401
 
     search_result = order_model.admin_check_order(order_id)
     if not search_result:
@@ -133,11 +152,10 @@ def update_specific_order_status(order_id):
     if validation:
         return jsonify({"error": validation}), 400
 
-    user.admin_update_order(
-        current_user[0]['id'],
-        order_id, get_input['status'].strip()
-    )
+    user.admin_update_order(current_user[0]['id'], order_id,
+                            get_input['status'].strip())
     return jsonify({"message": "Order status updated successfully"}), 200
+
 
 @app.route('/api/v1/admins/orders/<int:order_id>')
 @jwt_required
@@ -147,6 +165,8 @@ def admin_get_specific_order(order_id):
     current_user = get_jwt_identity()
     user_type = current_user[0]['account_type']
     if user_type != "admin":
-        return jsonify({"error": "Unauthorised Access for none ADMIN accounts"}), 401
+        return jsonify({
+            "error": "Unauthorised Access for none ADMIN accounts"
+        }), 401
     order = order_model.admin_check_order(order_id)
     return jsonify({"order": order})

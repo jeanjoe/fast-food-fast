@@ -1,8 +1,10 @@
 """Model for managing database Migration."""
 from app.models.connection import DatabaseConnection
 
+
 class Migration(DatabaseConnection):
     """Create Database tables."""
+
     def __init__(self):
         super().__init__()
 
@@ -19,8 +21,7 @@ class Migration(DatabaseConnection):
                 PASSWORD VARCHAR(191) NOT NULL,
                 CREATED_AT TIMESTAMP
             )
-            """,
-            """
+            """, """
             CREATE TABLE IF NOT EXISTS MENUS (
                 ID SERIAL PRIMARY KEY,
                 ADMIN_ID INT NOT NULL,
@@ -31,8 +32,7 @@ class Migration(DatabaseConnection):
                 STATUS BOOLEAN DEFAULT TRUE,
                 CREATED_AT TIMESTAMP
             )
-            """,
-            """
+            """, """
             CREATE TABLE IF NOT EXISTS ORDERS (
                 ID SERIAL PRIMARY KEY,
                 MENU_ID INT NOT NULL,
@@ -52,10 +52,11 @@ class Migration(DatabaseConnection):
         for query in query:
             self.cursor.execute(query)
         return True
-    
+
     def truncate_tables(self, tables=list):
         """Truncate tables."""
         for table in tables:
-            query = """TRUNCATE TABLE {} RESTART IDENTITY CASCADE""".format(table)
+            query = """TRUNCATE TABLE {} RESTART IDENTITY CASCADE""".format(
+                table)
             self.cursor.execute(query)
         return True

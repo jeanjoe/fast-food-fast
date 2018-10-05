@@ -4,7 +4,8 @@ from app.models.user import User
 from app.models.order import OrderModel
 from app.models.menu import MenuModel
 from flask import jsonify, request
-from flask_jwt_extended import (jwt_required, create_access_token, get_jwt_identity)
+from flask_jwt_extended import (jwt_required, create_access_token,
+                                get_jwt_identity)
 from .validator import InputValidator
 from validate_email import validate_email
 from flasgger import swag_from
@@ -14,6 +15,7 @@ order_model = OrderModel()
 menu = MenuModel()
 input_validator = InputValidator()
 
+
 @app.route('/api/v1/users/register', methods=['POST'])
 @swag_from('../docs/user_signup.yml')
 def register_user():
@@ -21,21 +23,27 @@ def register_user():
     validation = input_validator.validate_input(
         ['first_name', 'last_name', 'email', 'password'])
     if validation:
-        return jsonify({"message": 'Validation error', "errors": validation}), 400
+        return jsonify({
+            "message": 'Validation error',
+            "errors": validation
+        }), 400
 
     #If Validation passes, add to list
     get_input = request.get_json()
     if not validate_email(get_input['email']):
         return jsonify({"error": "Invalid email address"}), 200
 
-    search_duplicate_email = user.search_user('email', get_input['email'].strip())
+    search_duplicate_email = user.search_user('email',
+                                              get_input['email'].strip())
     if search_duplicate_email:
-        return jsonify(field="email", message="This email address is already registered"), 200
+        return jsonify(
+            field="email",
+            message="This email address is already registered"), 200
     user.register_user(
-        get_input['first_name'].strip(), get_input['last_name'].strip(), get_input['email'].strip(),
-        get_input['password'], "client"
-    )
+        get_input['first_name'].strip(), get_input['last_name'].strip(),
+        get_input['email'].strip(), get_input['password'], "client")
     return jsonify({"message": "User added successfully"}), 201
+
 
 @app.route('/api/v1/users/login', methods=['POST'])
 @swag_from('../docs/user_signin.yml')
@@ -43,12 +51,19 @@ def login_user():
     """Login User."""
     validation = input_validator.validate_input(['email', 'password'])
     if validation:
-        return jsonify({"message": 'Validation error', "errors": validation}), 400
+        return jsonify({
+            "message": 'Validation error',
+            "errors": validation
+        }), 400
     get_input = request.get_json()
-    user_login = user.signin_user(get_input['email'].strip(), get_input['password'])
+    user_login = user.signin_user(get_input['email'].strip(),
+                                  get_input['password'])
     if user_login:
-        return jsonify(user_token=create_access_token([user_login]), message="Login successfully"), 200
+        return jsonify(
+            user_token=create_access_token([user_login]),
+            message="Login successfully"), 200
     return jsonify(error="Wrong Email or password"), 401
+
 
 @app.route('/api/v1/users/orders', methods=['POST'])
 @jwt_required
@@ -58,21 +73,28 @@ def user_add_order():
     current_user = get_jwt_identity()
     user_type = current_user[0]['account_type']
     if user_type != "client":
-        return jsonify({"error": "Unauthorised Access for none user accounts"}), 401
-    validation = input_validator.validate_input(['menu_id', 'location', 'quantity'])
+        return jsonify({
+            "error": "Unauthorised Access for none user accounts"
+        }), 401
+    validation = input_validator.validate_input(
+        ['menu_id', 'location', 'quantity'])
     if validation:
-        return jsonify({"message": 'Validation error', "errors": validation}), 400
-  
+        return jsonify({
+            "message": 'Validation error',
+            "errors": validation
+        }), 400
+
     get_input = request.get_json()
     search_menu = menu.get_a_single_menu(get_input['menu_id'])
     if not search_menu:
-        return jsonify(error="This menu item doesn't exist in the menu list"), 404
+        return jsonify(
+            error="This menu item doesn't exist in the menu list"), 404
 
     saved_order = order_model.add_order(
-        get_input['menu_id'], current_user[0]['id'],
-        get_input['location'], get_input['quantity']
-    )
+        get_input['menu_id'], current_user[0]['id'], get_input['location'],
+        get_input['quantity'])
     return jsonify({"data": saved_order}), 201
+
 
 @app.route('/api/v1/users/orders/<int:order_id>')
 @jwt_required
@@ -82,15 +104,16 @@ def get_user_specific_order(order_id):
     current_user = get_jwt_identity()
     user_type = current_user[0]['account_type']
     if user_type != "client":
-        return jsonify({"error": "Unauthorised Access for none user accounts"}), 401
+        return jsonify({
+            "error": "Unauthorised Access for none user accounts"
+        }), 401
 
-    search_result = order_model.get_specific_client_order( 
-        current_user[0]['id'], 
-        order_id
-    )
+    search_result = order_model.get_specific_client_order(
+        current_user[0]['id'], order_id)
     if not search_result:
         return jsonify({"message": 'Cannot find this order'}), 404
     return jsonify({"order": search_result}), 200
+
 
 @app.route('/api/v1/users/orders', methods=['GET'])
 @jwt_required
@@ -100,6 +123,8 @@ def get_current_user_orders():
     current_user = get_jwt_identity()
     user_type = current_user[0]['account_type']
     if user_type != "client":
-        return jsonify({"error": "Unauthorised Access for none user accounts"}), 401
+        return jsonify({
+            "error": "Unauthorised Access for none user accounts"
+        }), 401
     search_result = order_model.get_all_client_orders(current_user[0]['id'])
     return jsonify({"order": search_result}), 200

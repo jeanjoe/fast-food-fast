@@ -3,14 +3,16 @@ import json
 from tests.base_test import BaseTest
 from . import MENU_DATA, ORDER_DATA
 
+
 class OrderTest(BaseTest):
     """Order Tests."""
 
     def test_post_order_invalid_token(self):
         """Test for post order without token."""
-        response = self.app.post(self.base_url+"users/orders")
+        response = self.app.post(self.base_url + "users/orders")
         self.assertEqual(response.status_code, 401)
-        assert json.loads(response.data)['msg'] == "Missing Authorization Header"
+        assert json.loads(
+            response.data)['msg'] == "Missing Authorization Header"
 
     def test_admin_update_order_status(self):
         """Test admin update order status."""
@@ -19,20 +21,18 @@ class OrderTest(BaseTest):
         self.app.post(
             self.base_url + 'admins/menus',
             headers={"Authorization": "Bearer " + admin_token},
-            json=MENU_DATA
-        )
+            json=MENU_DATA)
         self.app.post(
             self.base_url + "users/orders",
             json=ORDER_DATA,
-            headers={"Authorization": "Bearer " + token}
-        )
+            headers={"Authorization": "Bearer " + token})
         response = self.app.put(
             self.base_url + "admins/orders/1/update",
             headers={"Authorization": "Bearer " + admin_token},
-            json={"status": "Complete"}
-        )
+            json={"status": "Complete"})
         assert response.status_code == 200
-        assert json.loads(response.data)['message'] == "Order status updated successfully"
+        assert json.loads(
+            response.data)['message'] == "Order status updated successfully"
 
     def test_admin_get_specific_order(self):
         """Test Admin get an order."""
@@ -41,15 +41,12 @@ class OrderTest(BaseTest):
         self.app.post(
             self.base_url + 'admins/menus',
             headers={"Authorization": "Bearer " + admin_token},
-            json=MENU_DATA
-        )
+            json=MENU_DATA)
         self.app.post(
             self.base_url + "users/orders",
             json=ORDER_DATA,
-            headers={"Authorization": "Bearer " + token}
-        )
+            headers={"Authorization": "Bearer " + token})
         response = self.app.get(
             self.base_url + "admins/orders/2",
-            headers={"Authorization": "Bearer " + admin_token}
-        )
+            headers={"Authorization": "Bearer " + admin_token})
         assert response.status_code == 200

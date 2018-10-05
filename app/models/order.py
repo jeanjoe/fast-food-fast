@@ -2,6 +2,7 @@
 from datetime import datetime
 from .connection import DatabaseConnection
 
+
 class OrderModel(DatabaseConnection):
     """Order Model."""
 
@@ -11,9 +12,9 @@ class OrderModel(DatabaseConnection):
         INSERT INTO ORDERS (menu_id, user_id, location, quantity, status, created_at) 
         VALUES (%s, %s, %s, %s, %s, %s);
         """
-        self.cursor.execute(
-            query, (menu_id, client_id, location, quantity, "New", str(datetime.now()))
-        )
+        self.cursor.execute(query,
+                            (menu_id, client_id, location, quantity, "New",
+                             str(datetime.now())))
         return "Order Inserted Successfully"
 
     def get_all_client_orders(self, client_id):

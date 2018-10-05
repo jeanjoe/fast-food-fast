@@ -4,9 +4,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from .connection import DatabaseConnection
 from psycopg2.extensions import AsIs
 
+
 class User(DatabaseConnection):
     """Manage user DB interaction."""
-    def register_user(self, firstname, lastname, email, password, account_type):
+
+    def register_user(self, firstname, lastname, email, password,
+                      account_type):
         """Register users."""
         query = """
         INSERT INTO USERS (first_name, last_name, email, password, account_type, created_at) 
@@ -14,11 +17,8 @@ class User(DatabaseConnection):
         """
         self.cursor.execute(
             query,
-            (
-                firstname, lastname, email, generate_password_hash(password), account_type,
-                datetime.now()
-            )
-        )
+            (firstname, lastname, email, generate_password_hash(password),
+             account_type, datetime.now()))
         return True
 
     def search_user(self, field, data):
@@ -59,7 +59,8 @@ class User(DatabaseConnection):
         query = """
         UPDATE ORDERS SET status= %s, approved_by= %s, approved_at= %s WHERE id= %s
         """
-        self.cursor.execute(query, (status, admin_id, str(datetime.now()), order_id))
+        self.cursor.execute(query,
+                            (status, admin_id, str(datetime.now()), order_id))
         return True
 
     def login_search(self, email, account_type):

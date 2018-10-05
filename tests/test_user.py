@@ -1,10 +1,9 @@
 """User Tests for users API endpoints."""
 import json
 from tests.base_test import BaseTest
-from . import (
-    REGISTER_USER, USER_LOGIN, WRONG_USER_LOGIN, MENU_DATA,
-    REGISTER_USER_RANDOM_EMAIL, ORDER_DATA
-)
+from . import (REGISTER_USER, USER_LOGIN, WRONG_USER_LOGIN, MENU_DATA,
+               REGISTER_USER_RANDOM_EMAIL, ORDER_DATA)
+
 
 class UserTest(BaseTest):
     """Test user endpoints."""
@@ -16,9 +15,11 @@ class UserTest(BaseTest):
 
     def test_user_register(self):
         """Test successful register"""
-        response = self.app.post(self.base_url + 'users/register', json=REGISTER_USER_RANDOM_EMAIL)
+        response = self.app.post(
+            self.base_url + 'users/register', json=REGISTER_USER_RANDOM_EMAIL)
         self.assertEqual(response.status_code, 201)
-        assert json.loads(response.data)['message'] == "User added successfully"
+        assert json.loads(
+            response.data)['message'] == "User added successfully"
 
     def test_invalid_register_inputs(self):
         """Test register without data"""
@@ -29,14 +30,18 @@ class UserTest(BaseTest):
     def test_user_register_email_exist(self):
         """Test user email exists."""
         self.app.post(self.base_url + 'users/register', json=REGISTER_USER)
-        response = self.app.post(self.base_url + 'users/register', json=REGISTER_USER)
+        response = self.app.post(
+            self.base_url + 'users/register', json=REGISTER_USER)
         self.assertEqual(response.status_code, 200)
-        assert json.loads(response.data)['message'] == "This email address is already registered"
+        assert json.loads(
+            response.
+            data)['message'] == "This email address is already registered"
 
     def test_successful_user_login(self):
         """Test successful login."""
         self.app.post(self.base_url + 'users/register', json=REGISTER_USER)
-        response = self.app.post(self.base_url + 'users/login', json=USER_LOGIN)
+        response = self.app.post(
+            self.base_url + 'users/login', json=USER_LOGIN)
         self.assertEqual(response.status_code, 200)
         assert json.loads(response.data)['message'] == "Login successfully"
 
@@ -48,7 +53,8 @@ class UserTest(BaseTest):
 
     def test_failed_user_login(self):
         """Test user login with wrong credentials."""
-        response = self.app.post(self.base_url + 'users/login', json=WRONG_USER_LOGIN)
+        response = self.app.post(
+            self.base_url + 'users/login', json=WRONG_USER_LOGIN)
         self.assertEqual(response.status_code, 401)
         assert json.loads(response.data)['error'] == "Wrong Email or password"
 
@@ -57,21 +63,18 @@ class UserTest(BaseTest):
         token = self.return_admin_token()
         response = self.app.get(
             self.base_url + "users/orders",
-            headers=dict(Authorization="Bearer " + token)
-        )
+            headers=dict(Authorization="Bearer " + token))
         assert response.status_code == 401
         self.assertEqual(
             json.loads(response.data)['error'],
-            "Unauthorised Access for none user accounts"
-        )
+            "Unauthorised Access for none user accounts")
 
     def test_user_get_orders_with_user_token(self):
         """Test user get orders with user token."""
         token = self.return_user_token()
         response = self.app.get(
             self.base_url + "users/orders",
-            headers=dict(Authorization="Bearer " + token)
-        )
+            headers=dict(Authorization="Bearer " + token))
         assert response.status_code == 200
         self.assertIsInstance(json.loads(response.data)['order'], list)
 
@@ -80,23 +83,21 @@ class UserTest(BaseTest):
         token = self.return_admin_token()
         response = self.app.post(
             self.base_url + "users/orders",
-            headers=dict(Authorization="Bearer " + token)
-        )
+            headers=dict(Authorization="Bearer " + token))
         assert response.status_code == 401
         self.assertEqual(
             json.loads(response.data)['error'],
-            "Unauthorised Access for none user accounts"
-        )
+            "Unauthorised Access for none user accounts")
 
     def test_user_post_orders_with_user_token_without_data(self):
         """Test user post order without token."""
         token = self.return_user_token()
         response = self.app.post(
             self.base_url + "users/orders",
-            headers=dict(Authorization="Bearer " + token)
-        )
+            headers=dict(Authorization="Bearer " + token))
         assert response.status_code == 400
-        self.assertEqual(json.loads(response.data)['message'], "Validation error")
+        self.assertEqual(
+            json.loads(response.data)['message'], "Validation error")
 
     def test_user_post_orders_with_user_token_wrong_menu(self):
         """Test user post order order for menu not existing."""
@@ -104,13 +105,11 @@ class UserTest(BaseTest):
         response = self.app.post(
             self.base_url + "users/orders",
             headers=dict(Authorization="Bearer " + token),
-            json=ORDER_DATA
-        )
+            json=ORDER_DATA)
         assert response.status_code == 404
         self.assertEqual(
             json.loads(response.data)['error'],
-            "This menu item doesn't exist in the menu list"
-        )
+            "This menu item doesn't exist in the menu list")
 
     def test_user_post_orders_with_user_token_with_menu_exists(self):
         """Test user post order."""
@@ -118,61 +117,60 @@ class UserTest(BaseTest):
         self.app.post(
             self.base_url + 'admins/menus',
             headers={"Authorization": "Bearer " + admin_token},
-            json=MENU_DATA
-        )
+            json=MENU_DATA)
         token = self.return_user_token()
         response = self.app.post(
             self.base_url + "users/orders",
             headers=dict(Authorization="Bearer " + token),
-            json=ORDER_DATA
-        )
+            json=ORDER_DATA)
         assert response.status_code == 201
-        assert json.loads(response.data)['data'] == "Order Inserted Successfully"
+        assert json.loads(
+            response.data)['data'] == "Order Inserted Successfully"
 
     def test_get_user_orders_missing_token(self):
         """Test user get orders without token."""
         response = self.app.get(self.base_url + 'users/orders')
         self.assertEqual(response.status_code, 401)
-        assert json.loads(response.data)['msg'] == "Missing Authorization Header"
+        assert json.loads(
+            response.data)['msg'] == "Missing Authorization Header"
 
     def test_get_user_specific_order_without_token(self):
         """Test user get order without token."""
         response = self.app.get(self.base_url + 'users/orders/1')
         self.assertEqual(response.status_code, 401)
-        assert json.loads(response.data)['msg'] == "Missing Authorization Header"
+        assert json.loads(
+            response.data)['msg'] == "Missing Authorization Header"
 
     def test_get_user_specific_order_with_admin_token(self):
         """Test get user specific order with admin token."""
         token = self.return_admin_token()
         response = self.app.get(
             self.base_url + 'users/orders/1',
-            headers={"Authorization": "Bearer " + token}
-        )
+            headers={"Authorization": "Bearer " + token})
         assert response.status_code == 401
         self.assertEqual(
             json.loads(response.data)['error'],
-            "Unauthorised Access for none user accounts"
-        )
+            "Unauthorised Access for none user accounts")
 
     def test_get_user_specific_order_not_found_with_user_token(self):
         """Test get user's order not found."""
         token = self.return_user_token()
         response = self.app.get(
             self.base_url + 'users/orders/1',
-            headers={"Authorization": "Bearer " + token}
-        )
+            headers={"Authorization": "Bearer " + token})
         assert response.status_code == 404
-        self.assertEqual(json.loads(response.data)['message'], "Cannot find this order")
+        self.assertEqual(
+            json.loads(response.data)['message'], "Cannot find this order")
 
     def test_get_user_specific_order_with_user_token(self):
         """Test get users order."""
         token = self.return_user_token()
         response = self.app.get(
             self.base_url + 'users/orders/1',
-            headers={"Authorization": "Bearer " + token}
-        )
+            headers={"Authorization": "Bearer " + token})
         assert response.status_code == 404
-        self.assertEqual(json.loads(response.data)['message'], "Cannot find this order")
+        self.assertEqual(
+            json.loads(response.data)['message'], "Cannot find this order")
 
     def test_user_get_specific_order(self):
         """Test get all users orders."""
@@ -181,16 +179,13 @@ class UserTest(BaseTest):
         self.app.post(
             self.base_url + 'admins/menus',
             headers={"Authorization": "Bearer " + admin_token},
-            json=MENU_DATA
-        )
+            json=MENU_DATA)
         self.app.post(
             self.base_url + "users/orders",
             json=ORDER_DATA,
-            headers={"Authorization": "Bearer " + token}
-        )
+            headers={"Authorization": "Bearer " + token})
         response = self.app.get(
             self.base_url + "users/orders/1",
-            headers={"Authorization": "Bearer " + token}
-        )
+            headers={"Authorization": "Bearer " + token})
         assert response.status_code == 200
         self.assertIsInstance(json.loads(response.data)['order'], list)
