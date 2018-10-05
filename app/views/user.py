@@ -62,15 +62,8 @@ def user_add_order():
     validation = input_validator.validate_input(['menu_id', 'location', 'quantity'])
     if validation:
         return jsonify({"message": 'Validation error', "errors": validation}), 400
-    
-    #validate data type
+  
     get_input = request.get_json()
-    validate_datatype = input_validator.validate_datatype(
-        int, [get_input['quantity']]
-    )
-    if validate_datatype:
-        return jsonify({"data_type_error": validate_datatype }), 200
-
     search_menu = menu.get_a_single_menu(get_input['menu_id'])
     if not search_menu:
         return jsonify(error="This menu item doesn't exist in the menu list"), 404

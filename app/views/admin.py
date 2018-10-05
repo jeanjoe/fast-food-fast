@@ -133,11 +133,6 @@ def update_specific_order_status(order_id):
     if validation:
         return jsonify({"error": validation}), 400
 
-    if get_input['status'].strip() not in ['Processing', 'Cancelled', 'Complete']:
-        return jsonify({
-            "error": "Status must be Processing, Cancelled or Complete"
-        }), 400
-
     user.admin_update_order(
         current_user[0]['id'],
         order_id, get_input['status'].strip()

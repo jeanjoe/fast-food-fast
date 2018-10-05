@@ -10,15 +10,23 @@ class InputValidator:
         error_message = []
         for data in validation_data:
             input = request.get_json()
+            message =  data.strip() + ' is required'
             try:
                 input[data]
                 if not input[data]:
                     raise Exception(data)
+                elif data.strip() == 'password' and len(input[data]) < 5:
+                    message = data + ' should be atleast 5 characters'
+                    raise Exception(data)
+                elif data.strip() in ['quantity', 'price'] and not isinstance(input[data], int):
+                    message = "Please enter a valid integer for " + data
+                    raise Exception(data)
+                elif data.strip() == 'status' and input[data].strip() not in ['Processing', 'Cancelled', 'Complete']:
+                    message = "Status must be Processing, Cancelled or Complete"
+                    raise Exception(data)
             except:
-                error_message.append({'field': data, 'message': data + ' is required'})
+                error_message.append({'field': data, 'message': message})
 
-            # if data == 'password' and len(input[data]) < 5:
-            #     error_message.append({'field': 'password_length', 'message': data + ' should be atleast 5 characters'})
         return error_message
 
     def validate_datatype(self, data_type, data=list):
