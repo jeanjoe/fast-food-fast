@@ -8,11 +8,6 @@ from . import (REGISTER_USER, USER_LOGIN, WRONG_USER_LOGIN, MENU_DATA,
 class UserTest(BaseTest):
     """Test user endpoints."""
 
-    def test_main_end_point(self):
-        """Test root enpoint."""
-        response = self.app.get('/')
-        assert response.status_code == 200
-
     def test_user_register(self):
         """Test successful register"""
         response = self.app.post(
