@@ -110,10 +110,13 @@ def get_user_specific_order(order_id):
 
     search_result = order_model.get_specific_client_order(
         current_user[0]['id'], order_id)
-    if not search_result:
-        return jsonify({"message": 'Cannot find this order'}), 404
-    return jsonify({"order": search_result}), 200
 
+    status = 200
+    response = {"order": search_result}
+    if not search_result:
+        response = {"message": 'Cannot find this order'}
+        status = 404
+    return jsonify(response), status
 
 @app.route('/api/v1/users/orders', methods=['GET'])
 @jwt_required

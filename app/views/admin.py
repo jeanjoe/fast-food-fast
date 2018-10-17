@@ -114,7 +114,12 @@ def admin_get_single_menu(menu_id):
             "error": "Unauthorised Access for none ADMIN accounts"
         }), 401
     get_menu = menu.get_a_single_menu(menu_id)
-    return jsonify({"message": "success", "menus": get_menu}), 200
+    status = 200
+    response = {"message": "success", "menus": get_menu}
+    if not get_menu:
+        response = {"message": "This menu Item does not exist"}
+        status = 404
+    return jsonify(response), status
 
 
 @app.route('/api/v1/admins/orders', methods=['GET'])
@@ -169,4 +174,9 @@ def admin_get_specific_order(order_id):
             "error": "Unauthorised Access for none ADMIN accounts"
         }), 401
     order = order_model.admin_check_order(order_id)
-    return jsonify({"order": order})
+    
+    status = 200
+    response = {"message": "success", "order": order}
+    if not order:
+        response = {"message": "This Order does not exist"}
+    return jsonify(response), status

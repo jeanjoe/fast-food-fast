@@ -10,3 +10,4 @@ def index():
         'message':
         'Fast-food-fast API endpoints. Navigate to api/v1/orders'
     }), 200
+    
