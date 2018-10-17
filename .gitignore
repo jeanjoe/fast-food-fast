@@ -1,0 +1,12 @@
+env/*
+.vscode/*
+__pycache__/*
+app/__pycache__/*
+app/__init__.pyc
+app/models/__pycache__/*
+app/views/__pycache__/*
+tests/__pycache__/*
+tests/test_orders.pyc
+tests/__init__.pyc
+.pytest_cache/*
+.coverage
