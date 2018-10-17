@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="keywords" content="Fast-food-fast, food delivery app">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1,user-scalable=yes">
+  <title>Fast Food Fast - Order List</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <nav class="nav">
+    <div class="brand">
+      <a href="/">Fast-Food-Fast Restaurant.</a>
+    </div>
+    <div class="nav-left">
+      <a href="/user/history" class="nav-item">History</a>
+      <a href="/user/login" class="nav-item">Manzede (Logout)</a>
+    </div>
+  </nav>
+  <div class="content">
+    <div class="orders">
+      <h4>Welcome to Fast-Food-Fast Restuarant.</h4>
+      <h6><i>"Your Fastest Food delivery service app"</i></h6>
+
+      <div class="menu">
+        TODAY'S MENU LIST
+      </div>
+
+      <div class="order-item">
+        <div class="order-image">
+          <img src="{{ url_for('static', filename='images/default.png') }}" alt="default image">
+        </div>
+        <div class="order-content">
+          <div class="title">Sea Food - <span class="price">15,000 UGX</span> </div>
+          <div class="description">
+            All Sea Foods served with chillie.
+          </div>
+        </div>
+        <div class="order-button">
+          <a href="history.html" class="button">Order Now</a>
+        </div>
+      </div>
+
+      <div class="order-item">
+        <div class="order-image">
+          <img src="{{ url_for('static', filename='images/default.png') }}" alt="default image">
+        </div>
+        <div class="order-content">
+          <div class="title">Local Food - <span class="price">7,500 UGX</span> </div>
+          <div class="description">
+            All Food served with Beef, Beans, G-Nuts.
+          </div>
+        </div>
+        <div class="order-button">
+          <a href="history.html" class="button">Order Now</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <footer>
+    <a href="/admin/login">Go to Admin Page.</a>
+  </footer>
+</body>
+</html>
