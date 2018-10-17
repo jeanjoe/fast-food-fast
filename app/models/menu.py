@@ -27,7 +27,7 @@ class MenuModel(DatabaseConnection):
 
     def get_all_menus(self):
         """Get all the menus"""
-        query = "SELECT * FROM MENUS"
+        query = "SELECT * FROM USERS INNER JOIN MENUS ON MENUS.ADMIN_ID = USERS.ID"
         self.dict_cursor.execute(query)
         menus = self.dict_cursor.fetchall()
         return menus
