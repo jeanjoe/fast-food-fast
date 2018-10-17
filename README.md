@@ -14,6 +14,12 @@ The Demo is hosted on [gh-pages](https://jeanjoe.github.io/fast-food-fast/UI/ind
 
 https://manzede-fast-food-fast.herokuapp.com/api/v1/orders
 
+### Link to Database API Documentation
+https://manzede-fast-food-fast-3.herokuapp.com/apidocs/
+
+### Link to Database API
+https://manzede-fast-food-fast-3.herokuapp.com/api/v1/users/signup/
+
 ### Prerequisites
 -  Install `Python v3+`
 - Install `PosgreSQL9.2`
