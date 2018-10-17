@@ -1,8 +1,14 @@
 language: python
 
 python:
-    - "3.5"
     - "3.6"
+
+services:
+  - postgresql
+
+#Create postgresql database
+before_script:
+  - psql -c "CREATE DATABASE fast_foods_fast;" -U postgres
 
 # install dependencies
 install: 
@@ -10,9 +16,8 @@ install:
 
 # command to run tests
 script:
-  - nosetests --with-coverage --cover-tests
+  - pytest -v --cov app --cov-report term-missing
   - coverage report
-
 
 after_success:
 - coveralls
