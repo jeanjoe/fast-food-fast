@@ -20,15 +20,19 @@
   </nav>
   <div class="content">
     <div class="form">
-      <form class="signup" action="" method="post">
+      <form class="signup" method="post" id="sign_in_form">
         <h4>Sign In to Fast-Food-Fast</h4>
+        <div id="login-info"></div>
+        <div class="loading" id="login-loading"></div>
         <div class="field">
           <label for="email">Email</label>
-          <input type="email" name="email" value="" placeholder="manzede@gmail.com">
+          <input type="email" name="email" id="email" placeholder="manzede@gmail.com">
+          <div class="error" id="email-error"></div>
         </div>
-        <div class="field">
+        <div class="field" id="password-field">
           <label for="password">Login Password</label>
-          <input type="password" name="password" value="" placeholder="******" min="6">
+          <input type="password" name="password" id="password" placeholder="******" min="6">
+          <div class="error" id="password-error"></div>
         </div>
 
         <div class="field button">
@@ -40,5 +44,6 @@
       </div>
     </div>
   </div>
+  <script src="{{ url_for('static', filename='js/user.js') }}"></script>
 </body>
 </html>
