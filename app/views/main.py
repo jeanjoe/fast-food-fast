@@ -6,11 +6,6 @@ from app import app
 @app.route('/', methods=['GET'])
 def index():
     """API start route."""
-    # return jsonify({
-    #     'message':
-    #     'Fast-food-fast API endpoints. Navigate to api/v1/orders'
-    # }), 200
-
     return render_template('index.html')
 
 @app.route('/user/login', methods=['GET'])
@@ -32,3 +27,28 @@ def admin_login():
 def admin_registration():
     """Render admin register page."""
     return render_template('admin/sign-up.html')
+
+@app.route('/admin/orders', methods=['GET'])
+def admin_orders_page():
+    """Render admin orders page."""
+    return render_template('admin/orders.html')
+
+@app.route('/admin/menus', methods=['GET'])
+def admin_get_all_menus_page():
+    """Render admin menus page."""
+    return render_template('admin/menus/index.html')
+
+@app.route('/admin/menus/create', methods=['GET'])
+def admin_add_menu_page():
+    """Render admin add menu page."""
+    return render_template('admin/menus/create.html')
+
+@app.route('/admin/menus/<int:menu_id>', methods=['GET'])
+def admin_get_specific_menu_page(menu_id):
+    """Render admin get a menu page."""
+    return render_template('admin/menus/show.html', menu_id=menu_id)
+
+@app.route('/admin/orders/history', methods=['GET'])
+def admin_get_menu_history_page():
+    """Render admin get menu history page."""
+    return render_template('admin/history.html')
