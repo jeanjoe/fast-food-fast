@@ -32,7 +32,7 @@ nav .brand a {
  nav .nav-left .nav-item:hover {
     color: #fff;
  }
-
+ 
  .error {
   color: rgb(199, 33, 33);
  }
@@ -64,6 +64,7 @@ nav .brand a {
   width: 30%;
   margin: auto;
   box-sizing: border-box;
+  margin-bottom: 1em;
 }
 .form .signup {
   margin-top: 20px;
@@ -79,9 +80,10 @@ nav .brand a {
 .form label {
   font-size: 14px;
   font-weight: 600;
+  display: block;
+  margin: 6px 0;
 }
 .form .field input {
-  display: block;
   padding: 10px;
   width: 100%;
   border: 1px solid #bdc3c7;
@@ -90,12 +92,13 @@ nav .brand a {
 .form .button {
   margin-top: 20px;
 }
-.form .button .submit {
+.button .submit {
   border: none;
   padding: 10px;
   background: #d35400;
   font-weight: bold;
   color: #fff;
+  margin: 10px 0;
 }
 .orders {
   width: 60%;
@@ -188,6 +191,32 @@ footer {
 }
 footer a {
   color: #fff;
+}
+
+.menu-form {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.menu-form label {
+  display: block;
+  margin: 6px 0;
+}
+.menu-form input {
+  padding: 10px;
+  width: 100%;
+  border: 1px solid #bdc3c7;
+  box-sizing: border-box;
+}
+
+.menu-form textarea {
+  width: 100%;
+  height: 100px;
+  overflow: hidden;
+  padding: 10px;
+  border: 1px solid #bdc3c7;
+  box-sizing: border-box;
+  resize: none;
 }
 
 @media only screen and (max-width: 992px) {
