@@ -1,18 +1,18 @@
-const signin_form = getElementById('sign_in_form')
-const sign_up_form = getElementById('sign_up_form')
+var signin_form = getElementById('sign_in_form')
+var sign_up_form = getElementById('sign_up_form')
 
 //Define base_url and base_api_url
-const BASE_URL = location.protocol + "//" + location.host
-const BASE_API_URL = BASE_URL + "/api/v1/"
+var BASE_URL = location.protocol + "//" + location.host
+var BASE_API_URL = BASE_URL + "/api/v1/"
 
 if (signin_form) {
 
     signin_form.addEventListener('submit', function(event){
         var login_email = getElementById('email').value
         var login_password = getElementById('password').value
-        const email_error = getElementById('email-error')
-        const password_error = getElementById('password-error')
-        const login_info = getElementById('login-info')
+        var email_error = getElementById('email-error')
+        var password_error = getElementById('password-error')
+        var login_info = getElementById('login-info')
         
         //Empty all error divs
         emptyDivs(email_error)
@@ -87,7 +87,7 @@ if (sign_up_form) {
         var first_name_error = getElementById('first_name-error')
         var last_name_error = getElementById('last_name-error')
         var confirm_password_error = getElementById('confirm_password-error')
-        const register_info = getElementById('register-info')
+        var register_info = getElementById('register-info')
         
         //Empty all error divs
         emptyDivs(first_name_error)
