@@ -58,7 +58,7 @@ if (signin_form) {
                 login_info.classList.remove('alert-danger')
                 login_info.classList.add('alert-success')
                 login_info.innerHTML = '<span class="success">' + responseJson.message + ', redirecting...</span>'
-                redirectToUrl('/', 2000)
+                redirectToUrl('/admin/orders', 2000)
             } else {
                 //Return generaic error message
                 login_info.innerHTML = '<span class="error"> Ooops... Unable to process your request now</span>'
