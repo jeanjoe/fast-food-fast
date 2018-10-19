@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="keywords" content="Fast-food-fast, food delivery app">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1,user-scalable=yes">
+  <title>Fast Food Fast Admin - Create menus</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <nav class="nav">
+    <div class="brand">
+        <a href="/admin/orders">Fast-Food-Fast Admin.</a>
+    </div>
+    <div class="nav-left">
+      <a href="/admin/orders" class="nav-item">Orders</a>
+      <a href="/admin/orders/history" class="nav-item">History</a>
+      <a href="/admin/menus" class="nav-item">Menus</a>
+      <a href="/admin/logout" class="nav-item">Admin (Logout)</a>
+    </div>
+  </nav>
+  <div class="content">
+    <div class="orders">
+      <h4>Fast-Food-Fast Restaurant.</h4>
+
+      <div class="menu">
+        Add New Menu Item
+      </div>
+
+      <div class="order-item">
+        <form class="menu-form" id="add_menu_form">
+            <div class="field">
+                <label for="title">Menu item title</label>
+                <input type="text" name="title" id="title">
+            </div>
+            <div class="field">
+                <label for="description">Menu item description</label>
+                <textarea name="description" rows="4" cols="4" id="description"></textarea>
+            </div>
+            <div class="field">
+                <label for="price">Menu item price</label>
+                <input type="number" name="price" id="price" min="1000" max="500000">
+            </div>
+            <div class="button">
+                <button type="submit" class="submit">Add Item</button>
+            </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+  <footer>
+    <a href="/user/login">Go to User Page.</a>
+  </footer>
+</body>
+</html>
