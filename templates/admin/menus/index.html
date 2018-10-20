@@ -23,41 +23,13 @@
   <div class="content">
     <div class="orders">
       <h4>Fast-Food-Fast Restaurant.</h4>
-
-      <div class="menu">
-        MENU LIST
-      </div>
-
-      <div class="order-item">
-        <div class="order-image">
-          <img src="{{ url_for('static', filename='images/default.png') }}" alt="default image">
-        </div>
-        <div class="order-content">
-          <div class="title">Sea Food - <span class="price">15,000 UGX</span> </div>
-          <div class="description">
-            All Sea Foods served with chillie.
-          </div>
-          <p><small class="date">Date Created: 2018-09-10 13:43:34 - By: Manzede</small></p>
-        </div>
-      </div>
-
-      <div class="order-item">
-        <div class="order-image">
-          <img src="{{ url_for('static', filename='images/default.png') }}" alt="default image">
-        </div>
-        <div class="order-content">
-          <div class="title">Local Food - <span class="price">7,500 UGX</span> </div>
-          <div class="description">
-            All Food served with Beef, Beans, G-Nuts.
-          </div>
-          <p><small class="date">Date Created: 2018-09-10 13:43:34 - By: Manzede</small></p>
-        </div>
-      </div>
-
+      <div class="menu" id="menu_title"></div>
+      <span id="show_menu_items"></span>
     </div>
   </div>
   <footer>
     <a href="/user/login">Go to User Page.</a>
   </footer>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

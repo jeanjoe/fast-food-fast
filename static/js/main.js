@@ -114,31 +114,35 @@ function getMenus() {
                 window.location.href = "/admin/login"
             }, 1000)
         } else if (jsonResponse.menus) {
-            emptyDivs(['loading-text'])
-            //If response contains menus, display items
-            var titleDiv  = document.getElementById('menu_title')
-            titleDiv.innerHTML = "Menu Items [" + jsonResponse.menus.length + "]"
-            var fragment = document.createDocumentFragment()
-            for (let item of jsonResponse.menus) {
-                let menuItem = document.createElement('div')
-                menuItem.classList.add('order-item')
-                menuItem.innerHTML += '<div class="order-image">' +
-                '<img src="/static/images/default.png" alt="default image">' +
-                '</div>' + 
-                '<div class="order-content">' +
-                '<div class="title">' + item.title +' - <span class="price">' + 
-                Intl.NumberFormat('en-US', { style: 'currency', currency: 'UGX' }).format(item.price) +
-                '</span> </div>' + 
-                '<div class="description">' + 
-                '<p>' + item.description + '</p>' +
-                '</div>' + 
-                '<p><small class="date">Date Created: ' + 
-                item.created_at +
-                ' - By: ' + item.first_name + ' ' + item.last_name + '</small></p>' + 
-                '</div>'
-                fragment.appendChild(menuItem)
+            if (jsonResponse.menus.length > 0) {
+                emptyDivs(['loading-text'])
+                //If response contains menus, display items
+                var titleDiv  = document.getElementById('menu_title')
+                titleDiv.innerHTML = "<strong>Menu Items [" + jsonResponse.menus.length + "]</strong>"
+                var fragment = document.createDocumentFragment()
+                for (let item of jsonResponse.menus) {
+                    let menuItem = document.createElement('div')
+                    menuItem.classList.add('order-item')
+                    menuItem.innerHTML += '<div class="order-image">' +
+                    '<img src="/static/images/default.png" alt="default image">' +
+                    '</div>' + 
+                    '<div class="order-content">' +
+                    '<div class="title">' + item.title +' - <span class="price">' + 
+                    Intl.NumberFormat('en-US', { style: 'currency', currency: 'UGX' }).format(item.price) +
+                    '</span> </div>' + 
+                    '<div class="description">' + 
+                    '<p>' + item.description + '</p>' +
+                    '</div>' + 
+                    '<p><small class="date">Date Created: ' + 
+                    item.created_at +
+                    ' - By: ' + item.first_name + ' ' + item.last_name + '</small></p>' + 
+                    '</div>'
+                    fragment.appendChild(menuItem)
+                }
+                menu_items_element.appendChild(fragment)
+            } else {
+                loading_div.innerHTML = '<h4 class="error">No menu items found... Please <a href="/admin/menus/create">create one</a> !</h4>'
             }
-            menu_items_element.appendChild(fragment)
         }
     })
     .catch (function (error) {
