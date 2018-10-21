@@ -131,3 +131,17 @@ def get_current_user_orders():
         }), 401
     search_result = order_model.get_all_client_orders(current_user[0]['id'])
     return jsonify({"order": search_result}), 200
+
+@app.route('/api/v1/users/menus', methods=['GET'])
+@jwt_required
+@swag_from('../docs/user_get_menus.yml')
+def user_get_menus():
+    """User endpoint for getting all menus."""
+    current_user = get_jwt_identity()
+    user_type = current_user[0]['account_type']
+    if user_type != "client":
+        return jsonify({
+            "error": "Unauthorised Access for none user accounts"
+        }), 401
+    menus = menu.get_all_menus()
+    return jsonify({"message": "Menu items retrieved successfully", "menus": menus}), 200
