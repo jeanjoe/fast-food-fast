@@ -6,7 +6,8 @@ class App {
     render () {
         var show_menu_items = document.getElementById('show_menu_items')
         var user_show_menu_items = document.getElementById('user_show_menu_items')
-        let submit_menu_form = document.getElementById('add_menu_form')
+        var submit_menu_form = document.getElementById('add_menu_form')
+        var user_show_order_history = document.getElementById('user_show_order_history')
 
         if (submit_menu_form) {
             submit_menu_form.addEventListener('submit', function (event) {
@@ -26,6 +27,10 @@ class App {
 
         if (user_show_menu_items) {
             userGetMenuItems()
+        }
+
+        if (user_show_order_history) {
+            showUserOrderHistory()
         }
     }
 }
@@ -309,6 +314,84 @@ function makeOrder(menu_id) {
             loading_element.appendChild(loading_div)
         })
 
+    })
+}
+
+function showUserOrderHistory () {
+    var order_history_element = document.getElementById('user_show_order_history')
+    var loading_div = document.createElement('div')
+    loading_div.setAttribute('class', 'loading-text')
+    loading_div.setAttribute('id', 'loading-text')
+    loading_div.innerHTML = '<h4>Loading Order history....... Please wait!</h4>'
+    order_history_element.appendChild(loading_div)
+    //Fetch menu data from API
+    fetch("/api/v1/users/orders", {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': "Bearer " + this.readCookie('access_token')
+        }
+    })
+    .then (function(response) {
+        return response.json()
+    })
+    .then (function (jsonResponse) {
+        //If missing Authorization, Expired or invalid token
+        if (jsonResponse.msg) {
+            alert("Ooops Authorization error \n\n" + jsonResponse.msg)
+            setTimeout(function () {
+                window.location.href = "/user/login"
+            }, 1000)
+        } else if (jsonResponse.error) {
+            alert("Ooops Authorization error \n\n" + jsonResponse.error)
+            setTimeout(function () {
+                window.location.href = "/user/login"
+            }, 1000)
+        } else if (jsonResponse.order) {
+            if (jsonResponse.order.length > 0) {
+                emptyDivs(['loading-text'])
+                 //If response contains menus, display items
+                 var titleDiv  = document.getElementById('order_title')
+                 titleDiv.innerHTML = "<strong>Your order history [" + jsonResponse.order.length + "]</strong>"
+                 var fragment = document.createDocumentFragment()
+                 for (let item of jsonResponse.order) {
+                     var status = "pending"
+                     if (item.status == 'Completed') {
+                         status = 'completed'
+                     } else if (item.status == 'Declined') {
+                         status = 'declined'
+                     }
+                     let orderItem = document.createElement('form')
+                     orderItem.classList.add('order-item')
+                     orderItem.setAttribute('onSubmit', 'makeOrder(' + item.id + ')')
+                     orderItem.setAttribute('id', 'make_order_form_' + item.id)
+                     orderItem.innerHTML += '<div class="order-image">' +
+                     '<img src="/static/images/default.png" alt="default image">' +
+                     '</div>' + 
+                     '<div class="order-content">' +
+                     '<div class="title">' + item.title +' - <span class="price">' + 
+                     Intl.NumberFormat('en-US', { style: 'currency', currency: 'UGX' }).format(item.price) +
+                     '</span> </div>' + 
+                     '<div class="description">' + 
+                     '<p>' + item.description + '</p>' +
+                     '</div>' + 
+                     '<div class="field"><strong>Location:</strong> ' + item.location + '<strong> Quantity:</strong> ' + item.quantity + ' ' +
+                     '<strong>Total cost:</strong> ' +Intl.NumberFormat('en-US', { style: 'currency', currency: 'UGX' }).format(item.price * item.quantity) + '</div>' +
+                     '<p><small class="date">Date Created: ' + item.created_at + '</small></p>' +
+                     '</div>'+
+                     '<div class="order-button">' +
+                     '<button type="button" class="button ' + status + '">' + item.status + '</button>' +
+                     '</div>'
+                     fragment.appendChild(orderItem)
+                 }
+                 order_history_element.appendChild(fragment)
+            } else {
+                loading_div.innerHTML = '<h4 class="error">No orders found... Please make your first order.</4>'
+            }
+        }
+    })
+    .catch (function (error) {
+        loading_div.innerHTML = '<h4 class="error">No orders found... Please make your first order.</4>'
     })
 }
 
