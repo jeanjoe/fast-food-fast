@@ -52,7 +52,7 @@ function addMenu (title, description, price) {
         return response.json()
     })
     .then (function (jsonResponse) {
-        //If missing Authorization, Expired or invalid token
+        //If response contains errors
         if (jsonResponse.errors) {
             for (let error of jsonResponse.errors) {
                 //Display error messages
@@ -68,6 +68,7 @@ function addMenu (title, description, price) {
                 displayInfo('display-info', '<div class="alert-danger"><span class="error"> Ooops... ' + jsonResponse['message'] +'</span></div>')
             }
         } else if (jsonResponse.msg || jsonResponse.error) {
+            //If missing Authorization, Expired or invalid token
             alert("Ooops Authorization error \n\n" + jsonResponse.msg)
             setTimeout(function () {
                 window.location.href = "/admin/login"
@@ -200,6 +201,7 @@ function userGetMenuItems () {
                     let menuItem = document.createElement('form')
                     menuItem.classList.add('order-item')
                     menuItem.setAttribute('onSubmit', 'makeOrder(' + item.id + ')')
+                    menuItem.setAttribute('id', 'make_order_form_' + item.id)
                     menuItem.innerHTML += '<div class="order-image">' +
                     '<img src="/static/images/default.png" alt="default image">' +
                     '</div>' + 
@@ -211,8 +213,8 @@ function userGetMenuItems () {
                     '<p>' + item.description + '</p>' +
                     '</div>' + 
                     '<div class="field">' +
-                    '<input type="text" name="location" placeholder="Location" required>' +
-                    '<select name="quatity" id="quantity">' +
+                    '<input type="text" placeholder="Location" id="location_' + item.id + '" required>' +
+                    '<select id="quantity_' + item.id + '">' +
                     '<option value="1">1</option>' +
                     '<option value="2">2</option>' +
                     '<option value="3">3</option>' +
@@ -240,9 +242,74 @@ function userGetMenuItems () {
     })
 }
 
-function makeOrder(order_id) {
-    // order_id.preventDefault()
-    alert(order_id)
+function makeOrder(menu_id) {
+    var form = document.getElementById('make_order_form_' + menu_id)
+    document.addEventListener('submit', function (event) {
+        event.preventDefault()
+        var loading_element = document.getElementById('show_loading_status')
+        var loading_div = document.createElement('div')
+        loading_div.setAttribute('class', 'loading-text')
+        loading_div.setAttribute('id', 'loading-text')
+        loading_div.innerHTML = '<h4>Submitting order....... Please wait!</h4>'
+        loading_element.appendChild(loading_div)
+        emptyDivs(['show_loading_status'])
+
+        var location = document.getElementById('location_' + menu_id).value
+        var quantity = document.getElementById('quantity_' + menu_id).value
+
+        var data = JSON.stringify({
+            menu_id: menu_id,
+            location: location,
+            quantity: parseInt(quantity)
+        })
+        //Post order to API endpoint
+        fetch("/api/v1/users/orders", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': "Bearer " + readCookie('access_token')
+            },
+            body: data
+        })
+        .then (function(response) {
+            return response.json()
+        })
+        .then (function (jsonResponse) {
+            //If missing Authorization, Expired or invalid token
+            if (jsonResponse.msg) {
+                alert("Ooops Authorization error \n\n" + jsonResponse.msg)
+                setTimeout(function () {
+                    window.location.href = "/user/login"
+                }, 1000)
+            } else if (jsonResponse.error) {
+                if (jsonResponse.error == "This menu item doesn't exist in the menu list"){
+                    alert("Menu Item Not Found \n" + jsonResponse.error)
+                } else {
+                    alert("Ooops Authorization error \n\n" + jsonResponse.error)
+                    setTimeout(function () {
+                        window.location.href = "/user/login"
+                    }, 1000)
+                }
+            } else if (jsonResponse.errors) {
+                errorMessage = ""
+                for (let error of jsonResponse.errors){
+                    errorMessage += error.message + "\n"
+                }
+                alert("Ooops Validation error. \n\n" + errorMessage)
+            } else if (jsonResponse.data) {
+                emptyDivs(['show_loading_status'])
+                loading_div.innerHTML = '<h4>Kudos, Order placed successfully!</h4>'
+                loading_element.appendChild(loading_div)
+                emptyInputs(['location_' + menu_id, 'quantity_' + menu_id])
+            }
+        })
+        .catch (function (error) {
+            emptyDivs(['show_loading_status'])
+            loading_div.innerHTML = '<h4>Error! ' + error + '</h4>'
+            loading_element.appendChild(loading_div)
+        })
+
+    })
 }
 
 function displayInfo (divName, error) {
