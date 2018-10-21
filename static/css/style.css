@@ -184,6 +184,17 @@ nav .brand a {
   color: #2c3e50;
   font-size: 12px;
 }
+
+.order-item .field {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+.order-item .field input, .order-item .field select {
+  border: 1px solid #7f8c8d;
+  padding: 8px;
+  
+}
+
 footer {
   text-align: center;
   background: #7f8c8d;
