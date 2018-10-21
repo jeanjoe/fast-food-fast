@@ -135,7 +135,11 @@ function getMenus() {
                     '</div>' + 
                     '<p><small class="date">Date Created: ' + 
                     item.created_at +
-                    ' - By: ' + item.first_name + ' ' + item.last_name + '</small></p>' + 
+                    ' - By: ' + item.first_name + ' ' + item.last_name + '</small></p>' +
+                    '</div>'+
+                    '<div class="order-button">' +
+                    '<a href="/admin/menus/' + item.id + '/edit" class="button">Edit</a>' +
+                    '<button type="submit" class="button delete">Delete</button>' +
                     '</div>'
                     fragment.appendChild(menuItem)
                 }
