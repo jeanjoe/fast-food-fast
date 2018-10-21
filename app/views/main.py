@@ -52,3 +52,8 @@ def admin_get_specific_menu_page(menu_id):
 def admin_get_menu_history_page():
     """Render admin get menu history page."""
     return render_template('admin/history.html')
+
+@app.route('/user/orders/history', methods=['GET'])
+def user_get_order_history_page():
+    """Render user order history page."""
+    return render_template('history.html')
