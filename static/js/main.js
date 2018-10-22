@@ -8,6 +8,7 @@ class App {
         var user_show_menu_items = document.getElementById('user_show_menu_items')
         var submit_menu_form = document.getElementById('add_menu_form')
         var user_show_order_history = document.getElementById('user_show_order_history')
+        var admin_show_order_new_orders = document.getElementById('admin_show_order_new_orders')
 
         if (submit_menu_form) {
             submit_menu_form.addEventListener('submit', function (event) {
@@ -31,6 +32,10 @@ class App {
 
         if (user_show_order_history) {
             showUserOrderHistory()
+        }
+
+        if (admin_show_order_new_orders) {
+            adminGetNewOrders()
         }
     }
 }
@@ -77,7 +82,7 @@ function addMenu (title, description, price) {
             alert("Ooops Authorization error \n\n" + jsonResponse.msg)
             setTimeout(function () {
                 window.location.href = "/admin/login"
-            }, 1000)
+            }, 500)
         } else if (jsonResponse.message == "Menu added successfully") {
             emptyInputs(['title', 'description', 'price'])
             displayInfo(
@@ -118,12 +123,12 @@ function getMenus() {
             alert("Ooops Authorization error \n\n" + jsonResponse.msg)
             setTimeout(function () {
                 window.location.href = "/admin/login"
-            }, 1000)
+            }, 500)
         } else if (jsonResponse.error) {
             alert("Ooops Authorization error \n\n" + jsonResponse.error)
             setTimeout(function () {
                 window.location.href = "/admin/login"
-            }, 1000)
+            }, 500)
         } else if (jsonResponse.menus) {
             if (jsonResponse.menus.length > 0) {
                 emptyDivs(['loading-text'])
@@ -189,12 +194,12 @@ function userGetMenuItems () {
             alert("Ooops Authorization error \n\n" + jsonResponse.msg)
             setTimeout(function () {
                 window.location.href = "/user/login"
-            }, 1000)
+            }, 500)
         } else if (jsonResponse.error) {
             alert("Ooops Authorization error \n\n" + jsonResponse.error)
             setTimeout(function () {
                 window.location.href = "/user/login"
-            }, 1000)
+            }, 500)
         } else if (jsonResponse.menus) {
             if (jsonResponse.menus.length > 0) {
                 emptyDivs(['loading-text'])
@@ -285,7 +290,7 @@ function makeOrder(menu_id) {
                 alert("Ooops Authorization error \n\n" + jsonResponse.msg)
                 setTimeout(function () {
                     window.location.href = "/user/login"
-                }, 1000)
+                }, 500)
             } else if (jsonResponse.error) {
                 if (jsonResponse.error == "This menu item doesn't exist in the menu list"){
                     alert("Menu Item Not Found \n" + jsonResponse.error)
@@ -293,7 +298,7 @@ function makeOrder(menu_id) {
                     alert("Ooops Authorization error \n\n" + jsonResponse.error)
                     setTimeout(function () {
                         window.location.href = "/user/login"
-                    }, 1000)
+                    }, 500)
                 }
             } else if (jsonResponse.errors) {
                 errorMessage = ""
@@ -341,12 +346,12 @@ function showUserOrderHistory () {
             alert("Ooops Authorization error \n\n" + jsonResponse.msg)
             setTimeout(function () {
                 window.location.href = "/user/login"
-            }, 1000)
+            }, 500)
         } else if (jsonResponse.error) {
             alert("Ooops Authorization error \n\n" + jsonResponse.error)
             setTimeout(function () {
                 window.location.href = "/user/login"
-            }, 1000)
+            }, 500)
         } else if (jsonResponse.order) {
             if (jsonResponse.order.length > 0) {
                 emptyDivs(['loading-text'])
@@ -358,7 +363,7 @@ function showUserOrderHistory () {
                      var status = "pending"
                      if (item.status == 'Completed') {
                          status = 'completed'
-                     } else if (item.status == 'Declined') {
+                     } else if (item.status == 'Cancelled') {
                          status = 'declined'
                      }
                      let orderItem = document.createElement('form')
@@ -391,7 +396,134 @@ function showUserOrderHistory () {
         }
     })
     .catch (function (error) {
-        loading_div.innerHTML = '<h4 class="error">No orders found... Please make your first order.</4>'
+        loading_div.innerHTML = '<h4 class="error">Error while loading orders.... ' + error +'.</4>'
+    })
+}
+
+function adminGetNewOrders () {
+    //Get all New Orders
+    var admin_show_order_new_orders = document.getElementById('admin_show_order_new_orders')
+    var loading_div = document.createElement('div')
+    loading_div.setAttribute('class', 'loading-text')
+    loading_div.setAttribute('id', 'loading-text')
+    loading_div.innerHTML = '<h4>Loading New Orders....... Please wait!</h4>'
+    admin_show_order_new_orders.appendChild(loading_div)
+    //Fetch menu data from API
+    fetch("/api/v1/admins/orders", {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': "Bearer " + this.readCookie('access_token')
+        }
+    })
+    .then (function(response) {
+        return response.json()
+    })
+    .then (function (jsonResponse) {
+        //If missing Authorization, Expired or invalid token
+        if (jsonResponse.msg) {
+            alert("Ooops Authorization error \n\n" + jsonResponse.msg)
+            setTimeout(function () {
+                window.location.href = "/admin/login"
+            }, 500)
+        } else if (jsonResponse.error) {
+            alert("Ooops Authorization error \n\n" + jsonResponse.error)
+            setTimeout(function () {
+                window.location.href = "/admin/login"
+            }, 500)
+        } else if (jsonResponse.orders) {
+            if (jsonResponse.orders.length > 0) {
+                emptyDivs(['loading-text'])
+                 //If response contains menus, display items
+                 var titleDiv  = document.getElementById('order_title')
+                 titleDiv.innerHTML = "<strong>Client orders - [" + jsonResponse.orders.length + "]</strong>"
+                 var fragment = document.createDocumentFragment()
+                 for (let item of jsonResponse.orders) {
+                     var status = "pending"
+                     var button = '<button type="button" class="button completed" onclick="updateOrderStatus('+ item.id + ', \'Processing\' )">Accept</button>'+
+                    '<button type="button" class="button declined" onclick="updateOrderStatus('+ item.id + ', \'Cancelled\' )">X Decline</button>'
+                    
+                     if (item.status == 'Complete') {
+                        status = 'completed'
+                        button = '<span class="button ' + status + '">' + item.status + '</span>'
+                     } else if (item.status == 'Cancelled') {
+                        status = 'declined'
+                        button = '<span class="button ' +status +'">' + item.status + '</span>'
+                     } else if (item.status == 'Processing') {
+                        status = 'pending'
+                        button = '<span class="button ' +status +'">' + item.status + '</span>' +
+                        '<button type="button" class="button completed" onclick="updateOrderStatus('+ item.id + ', \'Complete\' )"> Mark as Complete</button>'
+                     }
+                     let orderItem = document.createElement('div')
+                     orderItem.classList.add('order-item')
+                     orderItem.innerHTML += '<div class="order-image">' +
+                     '<img src="/static/images/default.png" alt="default image">' +
+                     '</div>' + 
+                     '<div class="order-content">' +
+                     '<div class="title">' + item.title +' - <span class="price">' + 
+                     Intl.NumberFormat('en-US', { style: 'currency', currency: 'UGX' }).format(item.price) +
+                     '</span> </div>' + 
+                     '<div class="description">' + 
+                     '<p>' + item.description + '</p>' +
+                     '</div>' + 
+                     '<div class="field"><strong>Location:</strong> ' + item.location + '<strong> Quantity:</strong> ' + item.quantity + ' ' +
+                     '<strong>Total cost:</strong> ' +Intl.NumberFormat('en-US', { style: 'currency', currency: 'UGX' }).format(item.price * item.quantity) + '</div>' +
+                     '<p><small class="date">Date Created: ' + 
+                     item.created_at + 
+                     ' - By: ' + item.first_name + ' ' + item.last_name + ' Email: ' + item.email + '</small></p>' +
+                     '</small></p>' +
+                     '</div>'+
+                     '<div class="order-button">' +
+                     button + 
+                     '</div>'
+                     fragment.appendChild(orderItem)
+                 }
+                 admin_show_order_new_orders.appendChild(fragment)
+            } else {
+                loading_div.innerHTML = '<h4 class="error">No orders found... Please wait while customers make orders.</4>'
+            }
+        }
+    })
+    .catch (function (error) {
+        loading_div.innerHTML = '<h4 class="error">Error while loading orders.... ' + error +'.</4>'
+    })
+}
+
+function updateOrderStatus(order_id, status) {
+    var loading = document.getElementById('loading-text')
+    loading.innerHTML = '<h4>Updating status...</h4>'
+    fetch('/api/v1/admins/orders/' + parseInt(order_id) + '/update', {
+        method: "PUT",
+        body: JSON.stringify({status: status}),
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': "Bearer " + this.readCookie('access_token')
+        }
+    })
+    .then(function(response) {
+        return response.json()
+    })
+    .then(function (jsonResponse) {
+        console.log(jsonResponse)
+        //If missing Authorization, Expired or invalid token
+        if (jsonResponse.msg) {
+            alert("Ooops Authorization error \n\n" + jsonResponse.msg)
+            setTimeout(function () {
+                window.location.href = "/user/login"
+            }, 500)
+        } else if (jsonResponse.error) {
+            alert("Ooops Authorization error \n\n" + jsonResponse.error)
+            setTimeout(function () {
+                window.location.href = "/user/login"
+            }, 500)
+        } else if (jsonResponse.message) {
+            loading.innerHTML = '<h4 class="success">Status updated successfuly...</h4>'
+            emptyDivs(['admin_show_order_new_orders'])
+            adminGetNewOrders()
+        }
+    })
+    .catch(function(error) {
+        console.log(error)
     })
 }
 
