@@ -361,7 +361,7 @@ function showUserOrderHistory () {
                  var fragment = document.createDocumentFragment()
                  for (let item of jsonResponse.order) {
                      var status = "pending"
-                     if (item.status == 'Completed') {
+                     if (item.status == 'Complete') {
                          status = 'completed'
                      } else if (item.status == 'Cancelled') {
                          status = 'declined'
