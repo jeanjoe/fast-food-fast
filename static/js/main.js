@@ -8,7 +8,8 @@ class App {
         var user_show_menu_items = document.getElementById('user_show_menu_items')
         var submit_menu_form = document.getElementById('add_menu_form')
         var user_show_order_history = document.getElementById('user_show_order_history')
-        var admin_show_order_new_orders = document.getElementById('admin_show_order_new_orders')
+        var admin_show_new_orders = document.getElementById('admin_show_new_orders')
+        var admin_show_order_history = document.getElementById('admin_show_order_new_order_history')
 
         if (submit_menu_form) {
             submit_menu_form.addEventListener('submit', function (event) {
@@ -34,8 +35,12 @@ class App {
             showUserOrderHistory()
         }
 
-        if (admin_show_order_new_orders) {
-            adminGetNewOrders()
+        if (admin_show_new_orders) {
+            adminGetOrders('new')
+        }
+
+        if (admin_show_order_history) {
+            adminGetOrders('history')
         }
     }
 }
@@ -400,16 +405,26 @@ function showUserOrderHistory () {
     })
 }
 
-function adminGetNewOrders () {
-    //Get all New Orders
-    var admin_show_order_new_orders = document.getElementById('admin_show_order_new_orders')
+function adminGetOrders (order_type) {
+    //Get all Orders acccording to type
+    var elementID = 'admin_show_new_orders'
+    var url = ''
+    var loading_text = "Loading New orders..."
+    var title_text = "Clients Pending orders"
+    if (order_type == 'history') {
+        elementID = 'admin_show_order_new_order_history'
+        url = '/history'
+        loading_text = "Loading Order History..."
+        title_text = "Processed Order History"
+    }
+    var admin_show_order_orders = document.getElementById(elementID)
     var loading_div = document.createElement('div')
     loading_div.setAttribute('class', 'loading-text')
     loading_div.setAttribute('id', 'loading-text')
-    loading_div.innerHTML = '<h4>Loading New Orders....... Please wait!</h4>'
-    admin_show_order_new_orders.appendChild(loading_div)
+    loading_div.innerHTML = '<h4>' + loading_text + ' Please wait!</h4>'
+    admin_show_order_orders.appendChild(loading_div)
     //Fetch menu data from API
-    fetch("/api/v1/admins/orders", {
+    fetch("/api/v1/admins/orders" + url, {
         method: "GET",
         headers: {
             'Content-Type': 'application/json',
@@ -436,7 +451,7 @@ function adminGetNewOrders () {
                 emptyDivs(['loading-text'])
                  //If response contains menus, display items
                  var titleDiv  = document.getElementById('order_title')
-                 titleDiv.innerHTML = "<strong>Client orders - [" + jsonResponse.orders.length + "]</strong>"
+                 titleDiv.innerHTML = "<strong>" + title_text + " - [" + jsonResponse.orders.length + "]</strong>"
                  var fragment = document.createDocumentFragment()
                  for (let item of jsonResponse.orders) {
                      var status = "pending"
@@ -478,7 +493,7 @@ function adminGetNewOrders () {
                      '</div>'
                      fragment.appendChild(orderItem)
                  }
-                 admin_show_order_new_orders.appendChild(fragment)
+                 admin_show_order_orders.appendChild(fragment)
             } else {
                 loading_div.innerHTML = '<h4 class="error">No orders found... Please wait while customers make orders.</4>'
             }
@@ -518,8 +533,8 @@ function updateOrderStatus(order_id, status) {
             }, 500)
         } else if (jsonResponse.message) {
             loading.innerHTML = '<h4 class="success">Status updated successfuly...</h4>'
-            emptyDivs(['admin_show_order_new_orders'])
-            adminGetNewOrders()
+            emptyDivs(['admin_show_new_orders'])
+            adminGetOrders('new')
         }
     })
     .catch(function(error) {
