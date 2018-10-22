@@ -50,7 +50,13 @@ class User(DatabaseConnection):
 
     def admin_get_orders(self):
         """Get all oders for admin."""
-        query = """SELECT * FROM ORDERS"""
+        query = """SELECT MENUS.ID AS MENU_ID, MENUS.TITLE, MENUS.DESCRIPTION, MENUS.PRICE,
+        ORDERS.CREATED_AT, ORDERS.ID, ORDERS.STATUS, ORDERS.LOCATION, ORDERS.QUANTITY,
+        USERS.ID  AS USER_ID, USERS.FIRST_NAME, USERS.LAST_NAME, USERS.EMAIL
+        FROM MENUS INNER JOIN ORDERS ON ORDERS.MENU_ID = MENUS.ID
+        INNER JOIN USERS ON ORDERS.USER_ID = USERS.ID
+        WHERE (ORDERS.STATUS != 'Complete' AND ORDERS.STATUS != 'Cancelled')
+        ORDER BY ORDERS.CREATED_AT DESC;"""
         self.dict_cursor.execute(query)
         return self.dict_cursor.fetchall()
 
