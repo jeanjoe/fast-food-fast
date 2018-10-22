@@ -60,6 +60,18 @@ class User(DatabaseConnection):
         self.dict_cursor.execute(query)
         return self.dict_cursor.fetchall()
 
+    def admin_get_order_history(self):
+        """Get all oders History for admin."""
+        query = """SELECT MENUS.ID AS MENU_ID, MENUS.TITLE, MENUS.DESCRIPTION, MENUS.PRICE,
+        ORDERS.CREATED_AT, ORDERS.ID, ORDERS.STATUS, ORDERS.LOCATION, ORDERS.QUANTITY,
+        USERS.ID  AS USER_ID, USERS.FIRST_NAME, USERS.LAST_NAME, USERS.EMAIL
+        FROM MENUS INNER JOIN ORDERS ON ORDERS.MENU_ID = MENUS.ID
+        INNER JOIN USERS ON ORDERS.USER_ID = USERS.ID
+        WHERE (ORDERS.STATUS != 'New' AND ORDERS.STATUS != 'Processing')
+        ORDER BY ORDERS.CREATED_AT DESC;"""
+        self.dict_cursor.execute(query)
+        return self.dict_cursor.fetchall()
+
     def admin_update_order(self, admin_id, order_id, status):
         """Admin updates specific order status."""
         query = """
