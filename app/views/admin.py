@@ -136,6 +136,20 @@ def get_all_orders():
     return jsonify({'orders': user.admin_get_orders()}), 200
 
 
+@app.route('/api/v1/admins/orders/history', methods=['GET'])
+@jwt_required
+@swag_from('../docs/admin_get_order_history.yml')
+def get_all_order_history():
+    """Get all processed orders"""
+    current_user = get_jwt_identity()
+    user_type = current_user[0]['account_type']
+    if user_type != "admin":
+        return jsonify({
+            "error": "Unauthorised Access for none ADMIN accounts"
+        }), 401
+    return jsonify({'orders': user.admin_get_order_history()}), 200
+
+
 @app.route('/api/v1/admins/orders/<int:order_id>/update', methods=['PUT'])
 @jwt_required
 @swag_from('../docs/admin_update_order.yml')
