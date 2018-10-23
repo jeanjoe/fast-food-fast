@@ -43,6 +43,11 @@ def admin_add_menu_page():
     """Render admin add menu page."""
     return render_template('admin/menus/create.html')
 
+@app.route('/admin/menus/<int:menu_id>/edit', methods=['GET'])
+def admin_edit_specific_menu_page(menu_id):
+    """Render admin edit a menu page."""
+    return render_template('admin/menus/edit.html', menu_id=menu_id)
+
 @app.route('/admin/menus/<int:menu_id>', methods=['GET'])
 def admin_get_specific_menu_page(menu_id):
     """Render admin get a menu page."""
