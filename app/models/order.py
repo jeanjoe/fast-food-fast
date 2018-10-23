@@ -41,3 +41,12 @@ class OrderModel(DatabaseConnection):
     def admin_check_order(self, order_id):
         """Check an order for admin."""
         return self.select_single_column('orders', 'id', order_id)
+
+    def admin_update_menu(self, title, description, price, menu_id):
+        """Admin updates specific menu details."""
+        query = """
+        UPDATE MENUS SET title= %s, description= %s, price= %s WHERE id= %s
+        """
+        self.cursor.execute(query,
+                            (title, description, price, menu_id))
+        return True

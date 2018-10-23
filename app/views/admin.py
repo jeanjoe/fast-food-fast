@@ -87,6 +87,30 @@ def admin_add_menu():
     return jsonify(message="Menu added successfully"), 201
 
 
+@app.route('/api/v1/admins/menus/<int:menu_id>/update', methods=['PUT'])
+@jwt_required
+@swag_from('../docs/admin_update_menu.yml')
+def admin_update_menu_details(menu_id):
+    """Admin to add update menu item."""
+    current_user = get_jwt_identity()
+    user_type = current_user[0]['account_type']
+    if user_type != "admin":
+        return jsonify({
+            "error": "Unauthorised Access for none ADMIN accounts"
+        }), 401
+    validation = input_validator.validate_input(
+        ['title', 'description', 'price'])
+    if validation:
+        return jsonify({
+            "message": 'Validation error',
+            "errors": validation
+        }), 400
+    get_input = request.get_json()
+    order_model.admin_update_menu(get_input['title'], get_input['description'],
+                  get_input['price'], menu_id)
+    return jsonify(message="Menu Updated successfully"), 200
+
+
 @app.route('/api/v1/admins/menus', methods=['GET'])
 @jwt_required
 @swag_from('../docs/admin_get_menus.yml')
