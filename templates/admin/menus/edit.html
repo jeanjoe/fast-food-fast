@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="keywords" content="Fast-food-fast, food delivery app">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1,user-scalable=yes">
+  <title>Fast Food Fast Admin - Edit Menu Item</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <nav class="nav">
+    <div class="brand">
+        <a href="/admin/orders"><span class="logo">3F</span> Fast-Food-Fast Admin.</a>
+    </div>
+    <div class="nav-left">
+      <a href="/admin/orders" class="nav-item">Orders</a>
+      <a href="/admin/orders/history" class="nav-item">History</a>
+      <a href="/admin/menus" class="nav-item">Menus</a>
+      <a href="/admin/menus/create" class="nav-item">Add Menu</a>
+      <a href="/admin/logout" class="nav-item">Admin (Logout)</a>
+    </div>
+  </nav>
+  <div class="content" id="app">
+    <div class="orders">
+      <h4>Fast-Food-Fast Restaurant.</h4>
+
+      <div class="menu" id="edit_menu_title"></div>
+      <div class="loading-status" id="loading_text"></div>
+      <div class="order-item">
+        <form class="menu-form" id="edit_menu_form">
+            <div id="display-info"></div>
+            <div class="field" id="title-field">
+                <label for="title">Menu item title</label>
+                <input type="text" name="title" id="title">
+                <div class="error" id="title-error"></div>
+            </div>
+            <div class="field" id="decsription-field">
+                <label for="description">Menu item description</label>
+                <textarea name="description" rows="4" cols="4" id="description"></textarea>
+                <div class="error" id="description-error"></div>
+            </div>
+            <div class="field" id="price-field">
+                <label for="price">Menu item price</label>
+                <input type="number" name="price" id="price" min="1000" max="500000">
+                <div class="error" id="price-error"></div>
+            </div>
+            <input type="hidden" id="menu_id" value="{{ menu_id }}">
+            <div class="button">
+                <button type="submit" class="submit">Update Item Details</button>
+            </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+  <footer>
+    <a href="/user/login">Go to User Page.</a>
+  </footer>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
