@@ -32,6 +32,12 @@ nav .brand a {
  nav .nav-left .nav-item:hover {
     color: #fff;
  }
+
+ .logo {
+   padding: 5px;
+   border: 5px solid #fff;
+   border-radius: 7em;
+ }
  
  .error {
   color: rgb(199, 33, 33);
