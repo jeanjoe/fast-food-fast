@@ -111,6 +111,33 @@ def admin_update_menu_details(menu_id):
     return jsonify(message="Menu Updated successfully"), 200
 
 
+@app.route('/api/v1/admins/menus/<int:menu_id>', methods=['DELETE'])
+@jwt_required
+@swag_from('../docs/admin_delete_menu.yml')
+def admin_delete_menu_item(menu_id):
+    """Admin delete menu item."""
+    current_user = get_jwt_identity()
+    user_type = current_user[0]['account_type']
+    if user_type != "admin":
+        return jsonify({
+            "error": "Unauthorised Access for none ADMIN accounts"
+        }), 401
+
+    get_menu = menu.get_a_single_menu(menu_id)
+    status = 200
+    response = {"message": "Menu item deleted successfully"}
+    if not get_menu:
+        response = {"not_found_error": "This menu Item does not exist"}
+        status = 404
+        # return jsonify(response), status
+
+    menu.admin_delete_menu_item(menu_id)
+    return jsonify(response), status
+    
+
+    
+
+
 @app.route('/api/v1/admins/menus', methods=['GET'])
 @jwt_required
 @swag_from('../docs/admin_get_menus.yml')
