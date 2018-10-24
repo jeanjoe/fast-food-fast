@@ -1,57 +1,29 @@
-class App {
-    init () {
-        this.render ()
+document.addEventListener('DOMContentLoaded',  function () {
+    //On content Load
+    var show_menu_items = document.getElementById('show_menu_items')
+    var user_show_menu_items = document.getElementById('user_show_menu_items')
+    var submit_menu_form = document.getElementById('add_menu_form')
+    var user_show_order_history = document.getElementById('user_show_order_history')
+    var admin_show_new_orders = document.getElementById('admin_show_new_orders')
+    var admin_show_order_history = document.getElementById('admin_show_order_new_order_history')
+    var edit_menu_form = document.getElementById('edit_menu_form')
+    if (submit_menu_form) {
+        submit_menu_form.addEventListener('submit', function (event) {
+            event.preventDefault()
+            let title = document.getElementById('title').value
+            let description = document.getElementById('description').value
+            let price = parseInt(document.getElementById('price').value)
+            emptyDivs(['title-error', 'description-error', 'price-error', 'display-info'])
+            addMenu(title, description, price)
+        })
     }
-
-    render () {
-        var show_menu_items = document.getElementById('show_menu_items')
-        var user_show_menu_items = document.getElementById('user_show_menu_items')
-        var submit_menu_form = document.getElementById('add_menu_form')
-        var user_show_order_history = document.getElementById('user_show_order_history')
-        var admin_show_new_orders = document.getElementById('admin_show_new_orders')
-        var admin_show_order_history = document.getElementById('admin_show_order_new_order_history')
-        var edit_menu_form = document.getElementById('edit_menu_form')
-
-        if (submit_menu_form) {
-            submit_menu_form.addEventListener('submit', function (event) {
-                event.preventDefault()
-                let title = document.getElementById('title').value
-                let description = document.getElementById('description').value
-                let price = parseInt(document.getElementById('price').value)
-                //Empty error message divs
-                emptyDivs(['title-error', 'description-error', 'price-error', 'display-info'])
-                //Post daat through API
-                addMenu(title, description, price)
-            })
-        }
-        if (show_menu_items) {
-            getMenus()
-        }
-
-        if (user_show_menu_items) {
-            userGetMenuItems()
-        }
-
-        if (user_show_order_history) {
-            showUserOrderHistory()
-        }
-
-        if (admin_show_new_orders) {
-            adminGetOrders('new')
-        }
-
-        if (admin_show_order_history) {
-            adminGetOrders('history')
-        }
-
-        if (edit_menu_form) {
-            updateMenuDetails()
-        }
-    }
-}
-
-let app = new App()
-app.init()
+    if (show_menu_items) getMenus()
+    if (user_show_menu_items) userGetMenuItems()
+    if (user_show_order_history) showUserOrderHistory()
+    if (admin_show_new_orders) adminGetOrders('new')
+    if (admin_show_order_history) adminGetOrders('history')
+    if (edit_menu_form) updateMenuDetails()
+})
 
 function addMenu (title, description, price) {
     let data = JSON.stringify({
@@ -60,45 +32,22 @@ function addMenu (title, description, price) {
         price: price
     })
     //Submit data to API
-    fetch("/api/v1/admins/menus", {
-        method: "POST",
-        body: data,
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': "Bearer " + this.readCookie('access_token')
-        }
-    })
-    .then (function(response) {
-        return response.json()
-    })
-    .then (function (jsonResponse) {
+    var fetchedOrderData = fetchData('/api/v1/admins/menus', 'POST', data)
+    fetchedOrderData.then (function (jsonResponse) {
+        redirectUnautheneticated('admin', jsonResponse, 500)
         //If response contains errors
         if (jsonResponse.errors) {
             for (let error of jsonResponse.errors) {
                 //Display error messages
-                if (error['field'] == "title"){
-                    displayInfo('title-error', error['message'])
-                }
-                if (error['field'] == "description"){
-                    displayInfo('description-error', error['message'])
-                }
-                if (error['field'] == "price"){
-                    displayInfo('price-error', error['message'])
-                } 
+                if (error['field'] == "title") displayInfo('title-error', error['message'])
+                if (error['field'] == "description") displayInfo('description-error', error['message'])
+                if (error['field'] == "price") displayInfo('price-error', error['message']) 
                 displayInfo('display-info', '<div class="alert-danger"><span class="error"> Ooops... ' + jsonResponse['message'] +'</span></div>')
             }
-        } else if (jsonResponse.msg || jsonResponse.error) {
-            //If missing Authorization, Expired or invalid token
-            alert("Ooops Authorization error \n\n" + jsonResponse.msg)
-            setTimeout(function () {
-                window.location.href = "/admin/login"
-            }, 500)
         } else if (jsonResponse.message == "Menu added successfully") {
             emptyInputs(['title', 'description', 'price'])
             displayInfo(
-                'display-info', '<div class="alert-success"><span class="success">' + 
-                jsonResponse.message +
-                '</span></div>'
+                'display-info', '<div class="alert-success"><span class="success">' + jsonResponse.message + '</span></div>'
             )
         } else {
             displayInfo('display-info', '<div class="alert-danger"><span class="error"> Ooops... Unable to process ur request</span></div>')
@@ -117,29 +66,11 @@ function getMenus() {
     loading_div.innerHTML = '<h4>Loading Menu Items....... Please wait!</h4>'
     menu_items_element.appendChild(loading_div)
     //Fetch menu data from API
-    fetch("/api/v1/admins/menus", {
-        method: "GET",
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': "Bearer " + this.readCookie('access_token')
-        }
-    })
-    .then (function(response) {
-        return response.json()
-    })
-    .then (function (jsonResponse) {
+    var fetchedOrderData = fetchData('/api/v1/admins/menus', 'GET', '')
+    fetchedOrderData.then (function (jsonResponse) {
         //If missing Authorization, Expired or invalid token
-        if (jsonResponse.msg) {
-            alert("Ooops Authorization error \n\n" + jsonResponse.msg)
-            setTimeout(function () {
-                window.location.href = "/admin/login"
-            }, 500)
-        } else if (jsonResponse.error) {
-            alert("Ooops Authorization error \n\n" + jsonResponse.error)
-            setTimeout(function () {
-                window.location.href = "/admin/login"
-            }, 500)
-        } else if (jsonResponse.menus) {
+        redirectUnautheneticated('admin', jsonResponse, 500) 
+        if (jsonResponse.menus) {
             if (jsonResponse.menus.length > 0) {
                 emptyDivs(['loading-text'])
                 //If response contains menus, display items
@@ -188,29 +119,11 @@ function userGetMenuItems () {
     loading_div.innerHTML = '<h4>Loading Menu Items....... Please wait!</h4>'
     menu_items_element.appendChild(loading_div)
     //Fetch menu data from API
-    fetch("/api/v1/users/menus", {
-        method: "GET",
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': "Bearer " + this.readCookie('access_token')
-        }
-    })
-    .then (function(response) {
-        return response.json()
-    })
-    .then (function (jsonResponse) {
+    var fetchedOrderData = fetchData('/api/v1/users/menus', 'GET', '')
+    fetchedOrderData.then (function (jsonResponse) {
         //If missing Authorization, Expired or invalid token
-        if (jsonResponse.msg) {
-            alert("Ooops Authorization error \n\n" + jsonResponse.msg)
-            setTimeout(function () {
-                window.location.href = "/user/login"
-            }, 500)
-        } else if (jsonResponse.error) {
-            alert("Ooops Authorization error \n\n" + jsonResponse.error)
-            setTimeout(function () {
-                window.location.href = "/user/login"
-            }, 500)
-        } else if (jsonResponse.menus) {
+        redirectUnautheneticated('user', jsonResponse, 500)
+        if (jsonResponse.menus) {
             if (jsonResponse.menus.length > 0) {
                 emptyDivs(['loading-text'])
                 //If response contains menus, display items
@@ -222,9 +135,7 @@ function userGetMenuItems () {
                     menuItem.classList.add('order-item')
                     menuItem.setAttribute('onSubmit', 'makeOrder(' + item.id + ')')
                     menuItem.setAttribute('id', 'make_order_form_' + item.id)
-                    menuItem.innerHTML += '<div class="order-image">' +
-                    '<img src="/static/images/default.png" alt="default image">' +
-                    '</div>' + 
+                    menuItem.innerHTML += '<div class="order-image"><img src="/static/images/default.png" alt="default image"></div>' + 
                     '<div class="order-content">' +
                     '<div class="title">' + item.title +' - <span class="price">' + 
                     Intl.NumberFormat('en-US', { style: 'currency', currency: 'UGX' }).format(item.price) +
@@ -283,34 +194,11 @@ function makeOrder(menu_id) {
             quantity: parseInt(quantity)
         })
         //Post order to API endpoint
-        fetch("/api/v1/users/orders", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': "Bearer " + readCookie('access_token')
-            },
-            body: data
-        })
-        .then (function(response) {
-            return response.json()
-        })
-        .then (function (jsonResponse) {
+        var fetchedOrderData = fetchData('/api/v1/users/orders', 'POST', data)
+        fetchedOrderData.then (function (jsonResponse) {
             //If missing Authorization, Expired or invalid token
-            if (jsonResponse.msg) {
-                alert("Ooops Authorization error \n\n" + jsonResponse.msg)
-                setTimeout(function () {
-                    window.location.href = "/user/login"
-                }, 500)
-            } else if (jsonResponse.error) {
-                if (jsonResponse.error == "This menu item doesn't exist in the menu list"){
-                    alert("Menu Item Not Found \n" + jsonResponse.error)
-                } else {
-                    alert("Ooops Authorization error \n\n" + jsonResponse.error)
-                    setTimeout(function () {
-                        window.location.href = "/user/login"
-                    }, 500)
-                }
-            } else if (jsonResponse.errors) {
+            redirectUnautheneticated('user', jsonResponse, 500) 
+            if (jsonResponse.errors) {
                 errorMessage = ""
                 for (let error of jsonResponse.errors){
                     errorMessage += error.message + "\n"
@@ -339,30 +227,13 @@ function showUserOrderHistory () {
     loading_div.setAttribute('id', 'loading-text')
     loading_div.innerHTML = '<h4>Loading Order history....... Please wait!</h4>'
     order_history_element.appendChild(loading_div)
+    
     //Fetch menu data from API
-    fetch("/api/v1/users/orders", {
-        method: "GET",
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': "Bearer " + this.readCookie('access_token')
-        }
-    })
-    .then (function(response) {
-        return response.json()
-    })
-    .then (function (jsonResponse) {
+    var fetchedOrderData = fetchData('/api/v1/users/orders', 'GET', '')
+    fetchedOrderData.then (function (jsonResponse) {
         //If missing Authorization, Expired or invalid token
-        if (jsonResponse.msg) {
-            alert("Ooops Authorization error \n\n" + jsonResponse.msg)
-            setTimeout(function () {
-                window.location.href = "/user/login"
-            }, 500)
-        } else if (jsonResponse.error) {
-            alert("Ooops Authorization error \n\n" + jsonResponse.error)
-            setTimeout(function () {
-                window.location.href = "/user/login"
-            }, 500)
-        } else if (jsonResponse.order) {
+        redirectUnautheneticated('user', jsonResponse, 500)
+        if (jsonResponse.order) {
             if (jsonResponse.order.length > 0) {
                 emptyDivs(['loading-text'])
                  //If response contains menus, display items
@@ -410,7 +281,7 @@ function showUserOrderHistory () {
     })
 }
 
-function adminGetOrders (order_type) {
+function adminGetOrders ( order_type) {
     //Get all Orders acccording to type
     var elementID = 'admin_show_new_orders'
     var url = ''
@@ -428,77 +299,60 @@ function adminGetOrders (order_type) {
     loading_div.setAttribute('id', 'loading-text')
     loading_div.innerHTML = '<h4>' + loading_text + ' Please wait!</h4>'
     admin_show_order_orders.appendChild(loading_div)
+    
     //Fetch menu data from API
-    fetch("/api/v1/admins/orders" + url, {
-        method: "GET",
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': "Bearer " + this.readCookie('access_token')
-        }
-    })
-    .then (function(response) {
-        return response.json()
-    })
-    .then (function (jsonResponse) {
+    var fetchedOrderData = fetchData('/api/v1/admins/orders' + url, 'GET', '')
+    fetchedOrderData.then (function (jsonResponse) {
         //If missing Authorization, Expired or invalid token
-        if (jsonResponse.msg) {
-            alert("Ooops Authorization error \n\n" + jsonResponse.msg)
-            setTimeout(function () {
-                window.location.href = "/admin/login"
-            }, 500)
-        } else if (jsonResponse.error) {
-            alert("Ooops Authorization error \n\n" + jsonResponse.error)
-            setTimeout(function () {
-                window.location.href = "/admin/login"
-            }, 500)
-        } else if (jsonResponse.orders) {
+        redirectUnautheneticated('admin', jsonResponse, 500)
+        if (jsonResponse.orders) {
             if (jsonResponse.orders.length > 0) {
                 emptyDivs(['loading-text'])
-                 //If response contains menus, display items
-                 var titleDiv  = document.getElementById('order_title')
-                 titleDiv.innerHTML = "<strong>" + title_text + " - [" + jsonResponse.orders.length + "]</strong>"
-                 var fragment = document.createDocumentFragment()
-                 for (let item of jsonResponse.orders) {
-                     var status = "pending"
-                     var button = '<button type="button" class="button completed" onclick="updateOrderStatus('+ item.id + ', \'Processing\' )">Accept</button>'+
+                //If response contains menus, display items
+                var titleDiv  = document.getElementById('order_title')
+                titleDiv.innerHTML = "<strong>" + title_text + " - [" + jsonResponse.orders.length + "]</strong>"
+                var fragment = document.createDocumentFragment()
+                for (let item of jsonResponse.orders) {
+                    var status = "pending"
+                    var button = '<button type="button" class="button completed" onclick="updateOrderStatus('+ item.id + ', \'Processing\' )">Accept</button>'+
                     '<button type="button" class="button declined" onclick="updateOrderStatus('+ item.id + ', \'Cancelled\' )">X Decline</button>'
                     
-                     if (item.status == 'Complete') {
+                    if (item.status == 'Complete') {
                         status = 'completed'
                         button = '<span class="button ' + status + '">' + item.status + '</span>'
-                     } else if (item.status == 'Cancelled') {
+                    } else if (item.status == 'Cancelled') {
                         status = 'declined'
                         button = '<span class="button ' +status +'">' + item.status + '</span>'
-                     } else if (item.status == 'Processing') {
+                    } else if (item.status == 'Processing') {
                         status = 'pending'
                         button = '<span class="button ' +status +'">' + item.status + '</span>' +
                         '<button type="button" class="button completed" onclick="updateOrderStatus('+ item.id + ', \'Complete\' )"> Mark as Complete</button>'
-                     }
-                     let orderItem = document.createElement('div')
-                     orderItem.classList.add('order-item')
-                     orderItem.innerHTML += '<div class="order-image">' +
-                     '<img src="/static/images/default.png" alt="default image">' +
-                     '</div>' + 
-                     '<div class="order-content">' +
-                     '<div class="title">' + item.title +' - <span class="price">' + 
-                     Intl.NumberFormat('en-US', { style: 'currency', currency: 'UGX' }).format(item.price) +
-                     '</span> </div>' + 
-                     '<div class="description">' + 
-                     '<p>' + item.description + '</p>' +
-                     '</div>' + 
-                     '<div class="field"><strong>Location:</strong> ' + item.location + '<strong> Quantity:</strong> ' + item.quantity + ' ' +
-                     '<strong>Total cost:</strong> ' +Intl.NumberFormat('en-US', { style: 'currency', currency: 'UGX' }).format(item.price * item.quantity) + '</div>' +
-                     '<p><small class="date">Date Created: ' + 
-                     item.created_at + 
-                     ' - By: ' + item.first_name + ' ' + item.last_name + ' Email: ' + item.email + '</small></p>' +
-                     '</small></p>' +
-                     '</div>'+
-                     '<div class="order-button">' +
-                     button + 
-                     '</div>'
-                     fragment.appendChild(orderItem)
-                 }
-                 admin_show_order_orders.appendChild(fragment)
+                    }
+                    let orderItem = document.createElement('div')
+                    orderItem.classList.add('order-item')
+                    orderItem.innerHTML += '<div class="order-image">' +
+                    '<img src="/static/images/default.png" alt="default image">' +
+                    '</div>' + 
+                    '<div class="order-content">' +
+                    '<div class="title">' + item.title +' - <span class="price">' + 
+                    Intl.NumberFormat('en-US', { style: 'currency', currency: 'UGX' }).format(item.price) +
+                    '</span> </div>' + 
+                    '<div class="description">' + 
+                    '<p>' + item.description + '</p>' +
+                    '</div>' + 
+                    '<div class="field"><strong>Location:</strong> ' + item.location + '<strong> Quantity:</strong> ' + item.quantity + ' ' +
+                    '<strong>Total cost:</strong> ' +Intl.NumberFormat('en-US', { style: 'currency', currency: 'UGX' }).format(item.price * item.quantity) + '</div>' +
+                    '<p><small class="date">Date Created: ' + 
+                    item.created_at + 
+                    ' - By: ' + item.first_name + ' ' + item.last_name + ' Email: ' + item.email + '</small></p>' +
+                    '</small></p>' +
+                    '</div>'+
+                    '<div class="order-button">' +
+                    button + 
+                    '</div>'
+                    fragment.appendChild(orderItem)
+                }
+                admin_show_order_orders.appendChild(fragment)
             } else {
                 loading_div.innerHTML = '<h4 class="error">No orders found... Please wait while customers make orders.</4>'
             }
@@ -512,31 +366,13 @@ function adminGetOrders (order_type) {
 function updateOrderStatus(order_id, status) {
     var loading = document.getElementById('loading-text')
     loading.innerHTML = '<h4>Updating status...</h4>'
-    fetch('/api/v1/admins/orders/' + parseInt(order_id) + '/update', {
-        method: "PUT",
-        body: JSON.stringify({status: status}),
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': "Bearer " + this.readCookie('access_token')
-        }
-    })
-    .then(function(response) {
-        return response.json()
-    })
-    .then(function (jsonResponse) {
+    var data = JSON.stringify({status: status})
+    var fetchedOrderData = fetchData('/api/v1/admins/orders/' + parseInt(order_id) + '/update', 'PUT', data)
+    fetchedOrderData.then(function (jsonResponse) {
         console.log(jsonResponse)
         //If missing Authorization, Expired or invalid token
-        if (jsonResponse.msg) {
-            alert("Ooops Authorization error \n\n" + jsonResponse.msg)
-            setTimeout(function () {
-                window.location.href = "/user/login"
-            }, 500)
-        } else if (jsonResponse.error) {
-            alert("Ooops Authorization error \n\n" + jsonResponse.error)
-            setTimeout(function () {
-                window.location.href = "/user/login"
-            }, 500)
-        } else if (jsonResponse.message) {
+        redirectUnautheneticated('admin', jsonResponse, 500)
+        if (jsonResponse.message) {
             loading.innerHTML = '<h4 class="success">Status updated successfuly...</h4>'
             emptyDivs(['admin_show_new_orders'])
             adminGetOrders('new')
@@ -553,29 +389,11 @@ function updateMenuDetails () {
     var loading_text = document.getElementById('loading_text')
     loading_text.innerHTML = "Loading Menu details... please wait"
 
-    fetch('/api/v1/admins/menus/' + menu_id, {
-        method: "GET",
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': "Bearer " + readCookie('access_token')
-        }
-    })
-    .then (function(response) {
-        return response.json()
-    })
-    .then (function (jsonResponse) {
+    var fetchedOrderData = fetchData('/api/v1/admins/menus/' + menu_id, 'GET', '')
+    fetchedOrderData.then (function (jsonResponse) {
         emptyDivs(['loading_text'])
-        if (jsonResponse.msg) {
-            alert("Ooops Authorization error \n\n" + jsonResponse.msg)
-            setTimeout(function () {
-                window.location.href = "/admin/login"
-            }, 500)
-        } else if (jsonResponse.error) {
-            alert("Ooops Authorization error \n\n" + jsonResponse.error)
-            setTimeout(function () {
-                window.location.href = "/admin/login"
-            }, 500)
-        } else if (jsonResponse.menus) {
+        redirectUnautheneticated('admin', jsonResponse, 500)
+        if (jsonResponse.menus) {
             edit_menu_title.innerHTML = "Edit " + jsonResponse.menus[0].title + " details."
             document.getElementById('title').value = jsonResponse.menus[0].title
             document.getElementById('description').value = jsonResponse.menus[0].description
@@ -598,44 +416,18 @@ function updateMenuDetails () {
             price: parseInt(price)
         })
         //Update menu details
-        fetch('/api/v1/admins/menus/' + menu_id + '/update', {
-            method: 'PUT',
-            body: data,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': "Bearer " + readCookie('access_token')
-            }
-        })
-        .then ( function (response) {
-            return response.json()
-        })
-        .then (function (jsonResponse) {
-                //If response contains errors
+        var fetchedOrderData = fetchData('/api/v1/admins/menus/' + menu_id + '/update', 'PUT', data)
+        fetchedOrderData.then (function (jsonResponse) {
+            redirectUnautheneticated('admin', jsonResponse, 500)
+            //If response contains errors
             if (jsonResponse.errors) {
                 emptyDivs(['loading_text'])
                 for (let error of jsonResponse.errors) {
-                    //Display error messages
-                    if (error['field'] == "title"){
-                        displayInfo('title-error', error['message'])
-                    }
-                    if (error['field'] == "description"){
-                        displayInfo('description-error', error['message'])
-                    }
-                    if (error['field'] == "price"){
-                        displayInfo('price-error', error['message'])
-                    } 
+                    if (error['field'] == "title") displayInfo('title-error', error['message'])
+                    if (error['field'] == "description") displayInfo('description-error', error['message'])
+                    if (error['field'] == "price") displayInfo('price-error', error['message'])
                     displayInfo('display-info', '<div class="alert-danger"><span class="error"> Ooops... ' + jsonResponse['message'] +'</span></div>')
                 }
-            } else if (jsonResponse.msg) {
-                alert("Ooops Authorization error \n\n" + jsonResponse.msg)
-                setTimeout(function () {
-                    window.location.href = "/admin/login"
-                }, 500)
-            } else if (jsonResponse.error) {
-                alert("Ooops Authorization error \n\n" + jsonResponse.error)
-                setTimeout(function () {
-                    window.location.href = "/admin/login"
-                }, 500)
             } else if (jsonResponse.message) {
                 emptyDivs(['display-info', 'title-error', 'description-error', 'price-error'])
                 loading_text.innerHTML = "<span class='success'>Menu details updated successfuly</span> "
@@ -651,29 +443,11 @@ function updateMenuDetails () {
 function deleteMenuItem(menu_id) {
     var delete_status = document.getElementById('delete_status')
     delete_status.innerHTML = "Deleting menu item... Please wait"
-    fetch('/api/v1/admins/menus/' + menu_id, {
-        method: "DELETE",
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': "Bearer " + readCookie('access_token')
-        }
-    })
-    .then (function(response) {
-        return response.json()
-    })
-    .then (function (jsonResponse) {
+    var fetchedOrderData = fetchData('/api/v1/admins/menus/' + menu_id, 'DELETE', '')
+    fetchedOrderData.then (function (jsonResponse) {
         emptyDivs(['delete_status'])
-        if (jsonResponse.msg) {
-            alert("Ooops Authorization error \n\n" + jsonResponse.msg)
-            setTimeout(function () {
-                window.location.href = "/admin/login"
-            }, 500)
-        } else if (jsonResponse.error) {
-            alert("Ooops Authorization error \n\n" + jsonResponse.error)
-            setTimeout(function () {
-                window.location.href = "/admin/login"
-            }, 500)
-        } else if (jsonResponse.not_found_error) {
+        redirectUnautheneticated('admin', jsonResponse, 500)
+        if (jsonResponse.not_found_error) {
             delete_status.innerHTML = "Error  while Deleting menu item... " + jsonResponse.not_found_error
         } else if (jsonResponse.message) {
             emptyDivs(['show_menu_items'])
@@ -685,6 +459,54 @@ function deleteMenuItem(menu_id) {
     .catch (function (error) {
         delete_status.innerHTML = "<span class='error'>Error while loading menu details " + error + "</span>" 
     })
+}
+
+function fetchData( url, method, body) {
+    var append =''
+    if (body) {
+        append = {
+            method: method,
+            body: body,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': "Bearer " + readCookie('access_token')
+            }
+        }
+    } else {
+        append = {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': "Bearer " + readCookie('access_token')
+            }
+        }
+    }
+    return fetch(url, append)
+    .then( function (response) {
+        return response.json()
+    })
+    .then ( function(jsonResponse) {
+        return jsonResponse
+    })
+    .catch( function (error) {
+        return error
+    })
+}
+
+function redirectUnautheneticated(type, data, timeOut){
+    var url = '/user/login'
+    if ( type == 'admin') url = '/admin/login'
+    if (data.msg) {
+        alert("Ooops Authorization error \n\n" + data.msg)
+        setTimeout(function () {
+            window.location.href = url
+        }, timeOut)
+    } else if (data.error) {
+        alert("Ooops Authorization error \n\n" + data.error)
+        setTimeout(function () {
+            window.location.href = url
+        }, timeOut)
+    }
 }
 
 function displayInfo (divName, error) {
@@ -712,8 +534,8 @@ function emptyInputs(fieldNames) {
     return true
 }
 
-// Read cookie
 function readCookie (name) {
+    // Read cookie
     var nameEQ = name + "=";
     var ca = document.cookie.split(';');
     for(var i=0;i < ca.length;i++) {
