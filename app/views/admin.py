@@ -177,14 +177,14 @@ def admin_get_single_menu(menu_id):
 @jwt_required
 @swag_from('../docs/admin_get_orders.yml')
 def get_all_orders():
-    """Get all orders"""
+    """Get all new orders"""
     current_user = get_jwt_identity()
     user_type = current_user[0]['account_type']
     if user_type != "admin":
         return jsonify({
             "error": "Unauthorised Access for none ADMIN accounts"
         }), 401
-    return jsonify({'orders': user.admin_get_orders()}), 200
+    return jsonify({'orders': user.admin_get_orders('new')}), 200
 
 
 @app.route('/api/v1/admins/orders/history', methods=['GET'])
@@ -198,7 +198,7 @@ def get_all_order_history():
         return jsonify({
             "error": "Unauthorised Access for none ADMIN accounts"
         }), 401
-    return jsonify({'orders': user.admin_get_order_history()}), 200
+    return jsonify({'orders': user.admin_get_orders('history')}), 200
 
 
 @app.route('/api/v1/admins/orders/<int:order_id>/update', methods=['PUT'])

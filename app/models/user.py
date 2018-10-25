@@ -48,28 +48,23 @@ class User(DatabaseConnection):
         """Check if hashed password matches row password."""
         return check_password_hash(hashed_password, confirm_password)
 
-    def admin_get_orders(self):
+    def admin_get_orders(self, order_type):
+        status_one = 'Complete'
+        status_two = 'Cancelled'
+
+        if order_type == 'history':
+            status_one = 'New'
+            status_two = 'Processing'
+
         """Get all oders for admin."""
         query = """SELECT MENUS.ID AS MENU_ID, MENUS.TITLE, MENUS.DESCRIPTION, MENUS.PRICE,
         ORDERS.CREATED_AT, ORDERS.ID, ORDERS.STATUS, ORDERS.LOCATION, ORDERS.QUANTITY,
         USERS.ID  AS USER_ID, USERS.FIRST_NAME, USERS.LAST_NAME, USERS.EMAIL
         FROM MENUS INNER JOIN ORDERS ON ORDERS.MENU_ID = MENUS.ID
         INNER JOIN USERS ON ORDERS.USER_ID = USERS.ID
-        WHERE (ORDERS.STATUS != 'Complete' AND ORDERS.STATUS != 'Cancelled')
+        WHERE (ORDERS.STATUS != %s AND ORDERS.STATUS != %s)
         ORDER BY ORDERS.CREATED_AT DESC;"""
-        self.dict_cursor.execute(query)
-        return self.dict_cursor.fetchall()
-
-    def admin_get_order_history(self):
-        """Get all oders History for admin."""
-        query = """SELECT MENUS.ID AS MENU_ID, MENUS.TITLE, MENUS.DESCRIPTION, MENUS.PRICE,
-        ORDERS.CREATED_AT, ORDERS.ID, ORDERS.STATUS, ORDERS.LOCATION, ORDERS.QUANTITY,
-        USERS.ID  AS USER_ID, USERS.FIRST_NAME, USERS.LAST_NAME, USERS.EMAIL
-        FROM MENUS INNER JOIN ORDERS ON ORDERS.MENU_ID = MENUS.ID
-        INNER JOIN USERS ON ORDERS.USER_ID = USERS.ID
-        WHERE (ORDERS.STATUS != 'New' AND ORDERS.STATUS != 'Processing')
-        ORDER BY ORDERS.CREATED_AT DESC;"""
-        self.dict_cursor.execute(query)
+        self.dict_cursor.execute(query, (status_one, status_two))
         return self.dict_cursor.fetchall()
 
     def admin_update_order(self, admin_id, order_id, status):
