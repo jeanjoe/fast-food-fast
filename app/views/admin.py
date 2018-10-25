@@ -87,6 +87,54 @@ def admin_add_menu():
     return jsonify(message="Menu added successfully"), 201
 
 
+@app.route('/api/v1/admins/menus/<int:menu_id>/update', methods=['PUT'])
+@jwt_required
+@swag_from('../docs/admin_update_menu.yml')
+def admin_update_menu_details(menu_id):
+    """Admin to add update menu item."""
+    current_user = get_jwt_identity()
+    user_type = current_user[0]['account_type']
+    if user_type != "admin":
+        return jsonify({
+            "error": "Unauthorised Access for none ADMIN accounts"
+        }), 401
+    validation = input_validator.validate_input(
+        ['title', 'description', 'price'])
+    if validation:
+        return jsonify({
+            "message": 'Validation error',
+            "errors": validation
+        }), 400
+    get_input = request.get_json()
+    order_model.admin_update_menu(get_input['title'], get_input['description'],
+                  get_input['price'], menu_id)
+    return jsonify(message="Menu Updated successfully"), 200
+
+
+@app.route('/api/v1/admins/menus/<int:menu_id>', methods=['DELETE'])
+@jwt_required
+@swag_from('../docs/admin_delete_menu.yml')
+def admin_delete_menu_item(menu_id):
+    """Admin delete menu item."""
+    current_user = get_jwt_identity()
+    user_type = current_user[0]['account_type']
+    if user_type != "admin":
+        return jsonify({
+            "error": "Unauthorised Access for none ADMIN accounts"
+        }), 401
+
+    get_menu = menu.get_a_single_menu(menu_id)
+    status = 200
+    response = {"message": "Menu item deleted successfully"}
+    if not get_menu:
+        response = {"not_found_error": "This menu Item does not exist"}
+        status = 404
+        # return jsonify(response), status
+
+    menu.admin_delete_menu_item(menu_id)
+    return jsonify(response), status
+    
+
 @app.route('/api/v1/admins/menus', methods=['GET'])
 @jwt_required
 @swag_from('../docs/admin_get_menus.yml')
@@ -126,14 +174,28 @@ def admin_get_single_menu(menu_id):
 @jwt_required
 @swag_from('../docs/admin_get_orders.yml')
 def get_all_orders():
-    """Get all orders"""
+    """Get all new orders"""
     current_user = get_jwt_identity()
     user_type = current_user[0]['account_type']
     if user_type != "admin":
         return jsonify({
             "error": "Unauthorised Access for none ADMIN accounts"
         }), 401
-    return jsonify({'orders': user.admin_get_orders()}), 200
+    return jsonify({'orders': user.admin_get_orders('new')}), 200
+
+
+@app.route('/api/v1/admins/orders/history', methods=['GET'])
+@jwt_required
+@swag_from('../docs/admin_get_order_history.yml')
+def get_all_order_history():
+    """Get all processed orders"""
+    current_user = get_jwt_identity()
+    user_type = current_user[0]['account_type']
+    if user_type != "admin":
+        return jsonify({
+            "error": "Unauthorised Access for none ADMIN accounts"
+        }), 401
+    return jsonify({'orders': user.admin_get_orders('history')}), 200
 
 
 @app.route('/api/v1/admins/orders/<int:order_id>/update', methods=['PUT'])

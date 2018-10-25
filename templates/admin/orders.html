@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="keywords" content="Fast-food-fast, food delivery app">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1,user-scalable=yes">
+  <title>Fast Food Fast Admin - Orders</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <nav class="nav">
+    <div class="brand">
+      <a href="/admin/orders"><span class="logo">3F</span> Fast-Food-Fast Admin.</a>
+    </div>
+    <div class="nav-left">
+      <a href="/admin/orders" class="nav-item">Orders</a>
+      <a href="/admin/orders/history" class="nav-item">History</a>
+      <a href="/admin/menus" class="nav-item">Menus</a>
+      <a href="/admin/menus/create" class="nav-item">Add Menu</a>
+      <a href="javascript:void(0);" class="nav-item" onclick="logOut('admin')">Logout</a>
+    </div>
+  </nav>
+  <div class="content">
+    <div class="orders">
+      <h4>Fast-Food-Fast Restaurant.</h4>
+
+      <div class="menu" id="order_title"></div>
+      <span id="admin_show_new_orders">
+        <span id="show_loading_status"></span>
+      </span>
+
+    </div>
+  </div>
+  <footer>
+    <a href="/user/login">Go to User Page.</a>
+  </footer>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

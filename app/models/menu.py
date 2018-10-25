@@ -27,7 +27,15 @@ class MenuModel(DatabaseConnection):
 
     def get_all_menus(self):
         """Get all the menus"""
-        query = "SELECT * FROM USERS INNER JOIN MENUS ON MENUS.ADMIN_ID = USERS.ID"
+        query = "SELECT * FROM USERS INNER JOIN MENUS ON MENUS.ADMIN_ID = USERS.ID ORDER BY MENUS.CREATED_AT DESC"
         self.dict_cursor.execute(query)
         menus = self.dict_cursor.fetchall()
         return menus
+
+    def admin_delete_menu_item(self, menu_id):
+        """Delete specific menu item."""
+        delete_order_query = """DELETE FROM ORDERS WHERE MENU_ID=%s"""
+        self.dict_cursor.execute(delete_order_query, (menu_id,))
+        query = """DELETE FROM MENUS WHERE ID=%s"""
+        self.dict_cursor.execute(query, (menu_id,))
+        return True

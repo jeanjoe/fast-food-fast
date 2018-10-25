@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/jeanjoe/fast-food-fast.svg?branch=ft-challenge-three)](https://travis-ci.org/jeanjoe/fast-food-fast)
-[![Coverage Status](https://coveralls.io/repos/github/jeanjoe/fast-food-fast/badge.svg?branch=ft-challenge-three)](https://coveralls.io/github/jeanjoe/fast-food-fast?branch=ft-challenge-three)
+[![Build Status](https://travis-ci.com/jeanjoe/fast-food-fast.svg?branch=ft-challenge-four)](https://travis-ci.com/jeanjoe/fast-food-fast)
+[![Coverage Status](https://coveralls.io/repos/github/jeanjoe/fast-food-fast/badge.svg?branch=ft-challenge-three)](https://coveralls.io/github/jeanjoe/fast-food-fast?branch=ft-challenge-four)
 [![Maintainability](https://api.codeclimate.com/v1/badges/128fba01502d5f70e484/maintainability)](https://codeclimate.com/github/jeanjoe/fast-food-fast/maintainability)
 
 ### Fast-Food-Fast - Restaurant.
@@ -20,6 +20,9 @@ https://manzede-fast-food-fast-3.herokuapp.com/apidocs/
 ### Link to Database API
 https://manzede-fast-food-fast-3.herokuapp.com/api/v1/users/signup/
 
+### Link to INTERGRATED USER INRERFACE WITH API
+https://manzede-fast-food-fast-3.herokuapp.com/
+
 ### Prerequisites
 -  Install `Python v3+`
 - Install `PosgreSQL9.2`
@@ -32,6 +35,8 @@ https://manzede-fast-food-fast-3.herokuapp.com/api/v1/users/signup/
  - [Coveralls](http://coveralls.io/) - For test coverage
  - [Travis](https://travis-ci.com/) - For running tests online
  - [Heroku](https://data.heroku.com/) - For Deploying the applicatio
+ - [Vanilla Js](http://vanilla-js.com/) - Native JavaScript
+ - [Real Favicon Generator](https://realfavicongenerator.net/) - For generating Favicon icons
 
 ### How to run the app
 
@@ -64,6 +69,24 @@ To run the application, you need to have Python 3 and above installed on your ma
 |  Update Order Status | api/v1/admins/orders/<int:order_id>/update | PUT | status ('COMPLETED', 'ACCEPTED', 'PROTECTED') | YES |
 |  Get all orders | api/v1/admins/orders | GET | -------- | YES |
 |  Get specific order | /api/v1/admins/orders/<int:order_id> | GET | -------- | YES |
+
+
+### USER INTERFACE PAGES
+| Tasks| URL|
+|------|----------|
+|Admin Login|https://manzede-fast-food-fast-3.herokuapp.com/admin/login|
+|Admin register| https://manzede-fast-food-fast-3.herokuapp.com/admin/register|
+|Admin View Order| https://manzede-fast-food-fast-3.herokuapp.com/admin/orders |
+|Admin View order History | https://manzede-fast-food-fast-3.herokuapp.com/admin/orders/history|
+|Admin View Menu Items| https://manzede-fast-food-fast-3.herokuapp.com/admin/menus|
+|Admin Post Menu Item| https://manzede-fast-food-fast-3.herokuapp.com/admin/menus/create|
+|USER PAGE|
+|----------|-------------------|
+|User Login| https://manzede-fast-food-fast-3.herokuapp.com/user/login|
+|User Register| https://manzede-fast-food-fast-3.herokuapp.com/user/register|
+|User View Menu Items| https://manzede-fast-food-fast-3.herokuapp.com/|
+|User View Order History| https://manzede-fast-food-fast-3.herokuapp.com/user/orders/history|
+
 
 ### How to Run the Tests
 

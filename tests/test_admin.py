@@ -2,7 +2,7 @@
 import json
 from tests.base_test import BaseTest
 from . import (ADMIN_LOGIN, WRONG_USER_LOGIN, REGISTER_ADMIN,
-               REGISTER_USER_RANDOM_EMAIL)
+               REGISTER_USER_RANDOM_EMAIL, MENU_DATA)
 
 
 class AdminTest(BaseTest):
@@ -60,3 +60,16 @@ class AdminTest(BaseTest):
         self.assertEqual(response.status_code, 401)
         assert json.loads(
             response.data)['msg'] == "Missing Authorization Header"
+
+    def test_admin_delete_menu(self):
+        """Test admin delete menu item."""
+        token = self.return_admin_token()
+        self.app.post(
+            self.base_url + 'admins/menus',
+            headers={"Authorization": "Bearer " + token},
+            json=MENU_DATA)
+        response = self.app.delete(self.base_url + 'admins/menus/1',
+            headers={"Authorization": "Bearer " + token})
+        self.assertEqual(response.status_code, 200)
+        assert json.loads(
+            response.data)['message'] == "Menu item deleted successfully"

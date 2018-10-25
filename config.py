@@ -9,7 +9,7 @@ class Config():
 
 
 class DevelopmentConfig(Config):
-    DEBUG = True
+    DEBUG = False
     DB_NAME = "fast_foods_fast"
     DB_USER = "postgres"
     DB_PASS = "manben"
@@ -25,4 +25,4 @@ class TestingConfig(Config):
     DB_USER = "postgres"
     DB_PASS = "manben"
     DB_HOST = "localhost"
-    DB_PORT = "5432"
+    DB_PORT = "5433"

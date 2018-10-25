@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="keywords" content="Fast-food-fast, food delivery app">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1,user-scalable=yes">
+  <title>Fast Food Fast - Sign In</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicons/apple-touch-icon.png') }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicons/favicon-32x32.png') }}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicons/favicon-16x16.png') }}">
+  <link rel="manifest" href="{{ url_for('static', filename='favicons/site.webmanifest') }}">
+  <link rel="mask-icon" href="{{ url_for('static', filename='favicons/safari-pinned-tab.svg') }}" color="#5bbad5">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="theme-color" content="#ffffff">
+</head>
+<body>
+  <nav class="nav">
+    <div class="brand">
+        <a href="/"><span class="logo">3F</span> Fast-Food-Fast Restaurant</a>
+    </div>
+    <div class="nav-left">
+      <a href="/user/login" class="nav-item">Sign In</a>
+      <a href="/user/register" class="nav-item">Sign Up</a>
+    </div>
+  </nav>
+  <div class="content">
+    <div class="form">
+      <form class="signup" method="post" id="user_sign_in_form">
+        <h4>Sign In to Fast-Food-Fast</h4>
+        <div id="login-info"></div>
+        <div class="loading" id="login-loading"></div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" name="email" id="email" placeholder="manzede@gmail.com">
+          <div class="error" id="email-error"></div>
+        </div>
+        <div class="field" id="password-field">
+          <label for="password">Login Password</label>
+          <input type="password" name="password" id="password" placeholder="******" min="6">
+          <div class="error" id="password-error"></div>
+        </div>
+
+        <div class="field button">
+          <button type="submit" class="submit">Sign In</button>
+        </div>
+      </form>
+      <div class="link">
+        <a href="/user/register">Create an account.</a>
+      </div>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

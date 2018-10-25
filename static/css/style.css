@@ -20,9 +20,7 @@ nav .brand a {
   font-size: 16px;
   font-weight: 700;
 }
- nav .nav-left {
 
- }
  nav .nav-left .nav-item {
     color: #d35400;
     padding: 10px;
@@ -34,6 +32,36 @@ nav .brand a {
  nav .nav-left .nav-item:hover {
     color: #fff;
  }
+
+ .logo {
+   padding: 5px;
+   border: 5px solid #fff;
+   border-radius: 7em;
+ }
+ 
+ .error {
+  color: rgb(199, 33, 33);
+ }
+
+ .success {
+  color: rgb(32, 161, 20);
+ }
+
+ .alert-danger, .alert-success {
+  display: block;
+  font-size: 14px;
+  padding: 8px;
+  text-align: center;
+  border-radius: 3px;
+ }
+
+ .alert-danger {
+  background: rgb(233, 180, 180);
+ }
+
+ .alert-success {
+  background: rgb(116, 243, 164);
+ }
 .content {
   margin-bottom: 20px;
   min-height: 80vh;
@@ -42,6 +70,7 @@ nav .brand a {
   width: 30%;
   margin: auto;
   box-sizing: border-box;
+  margin-bottom: 1em;
 }
 .form .signup {
   margin-top: 20px;
@@ -57,9 +86,10 @@ nav .brand a {
 .form label {
   font-size: 14px;
   font-weight: 600;
+  display: block;
+  margin: 6px 0;
 }
 .form .field input {
-  display: block;
   padding: 10px;
   width: 100%;
   border: 1px solid #bdc3c7;
@@ -68,12 +98,13 @@ nav .brand a {
 .form .button {
   margin-top: 20px;
 }
-.form .button .submit {
+.button .submit {
   border: none;
   padding: 10px;
   background: #d35400;
   font-weight: bold;
   color: #fff;
+  margin: 10px 0;
 }
 .orders {
   width: 60%;
@@ -159,6 +190,17 @@ nav .brand a {
   color: #2c3e50;
   font-size: 12px;
 }
+
+.order-item .field {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+.order-item .field input, .order-item .field select {
+  border: 1px solid #7f8c8d;
+  padding: 8px;
+  
+}
+
 footer {
   text-align: center;
   background: #7f8c8d;
@@ -166,6 +208,32 @@ footer {
 }
 footer a {
   color: #fff;
+}
+
+.menu-form {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.menu-form label {
+  display: block;
+  margin: 6px 0;
+}
+.menu-form input {
+  padding: 10px;
+  width: 100%;
+  border: 1px solid #bdc3c7;
+  box-sizing: border-box;
+}
+
+.menu-form textarea {
+  width: 100%;
+  height: 100px;
+  overflow: hidden;
+  padding: 10px;
+  border: 1px solid #bdc3c7;
+  box-sizing: border-box;
+  resize: none;
 }
 
 @media only screen and (max-width: 992px) {
