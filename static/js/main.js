@@ -1,5 +1,9 @@
 document.addEventListener('DOMContentLoaded',  function () {
     //On content Load
+    var user_signin_form = document.getElementById('user_sign_in_form')
+    var admin_signin_form = document.getElementById('admin_sign_in_form')
+    var user_sign_up_form = document.getElementById('user_sign_up_form')
+    var admin_sign_up_form = document.getElementById('admin_sign_up_form')
     var show_menu_items = document.getElementById('show_menu_items')
     var user_show_menu_items = document.getElementById('user_show_menu_items')
     var submit_menu_form = document.getElementById('add_menu_form')
@@ -17,6 +21,10 @@ document.addEventListener('DOMContentLoaded',  function () {
             addMenu(title, description, price)
         })
     }
+    if (user_signin_form) submit_signin_form('user')
+    if (admin_signin_form) submit_signin_form('admin')
+    if (user_sign_up_form) submit_register_form('user')
+    if (admin_sign_up_form) submit_register_form('admin')
     if (show_menu_items) getMenus()
     if (user_show_menu_items) userGetMenuItems()
     if (user_show_order_history) showUserOrderHistory()
@@ -24,6 +32,126 @@ document.addEventListener('DOMContentLoaded',  function () {
     if (admin_show_order_history) adminGetOrders('history')
     if (edit_menu_form) updateMenuDetails()
 })
+
+function submit_signin_form( user_type ) {
+    var url = '/api/v1/users/login'
+    if (user_type == 'admin') url = '/api/v1/admins/login'
+    const form = document.getElementById(user_type + '_sign_in_form')
+    form.addEventListener('submit', function(event) {
+        event.preventDefault()
+        emptyDivs(['email-error','password-error','login_info'])
+        fetch(url, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                email: form[0].value,
+                password: form[1].value
+            })
+        })
+        .then(function(response) {
+            return response.json()
+        })
+        .then(function(jsonResponse) {
+            //if response has errors
+            var token = jsonResponse.user_token
+            if ( user_type == 'admin') token = jsonResponse.admin_token
+            if (jsonResponse.errors) {
+                for (let error of jsonResponse.errors) {
+                    //Display error messages
+                    if (error['field'] == "email") displayInfo('email-error', '<span class="error">' + error['message'] +'</span>')
+                    if (error['field'] == "password") displayInfo('password-error', '<span class="error">' + error['message'] +'</span>')
+                    displayInfo('login-info', '<span class="alert-danger"> Ooops... ' + jsonResponse['message'] +'</span>')
+                }
+            } else if (jsonResponse.error) {
+                //If response has an error
+                displayInfo('login-info', '<span class="alert-danger"> Ooops... ' + jsonResponse.error +'</span>')
+            } else if (token) {
+                //Add token to cookie
+                var redirectUrl = '/'
+                if (user_type == 'admin') redirectUrl = '/admin/orders'
+                createCookie('access_token', token, 30)
+                displayInfo('login-info', '<span class="alert-success success">' + jsonResponse.message + ', redirecting...</span>')
+                setTimeout(function () {
+                    window.location.href = redirectUrl
+                }, 1000)
+            } else {
+                //Return generic error message
+                displayInfo('login-info', '<span class="alert-danger"> Ooops... Unable to process your request now</span>')
+            }
+        })
+        .catch(function(error) {
+            displayInfo('login-info', '<span class="alert-danger"> Oops, there was a problem: '+  error +'</span>')
+        })
+    }, false)
+    //Disable multiple submit
+    // form[2].setAttribute('disabled', 'disabled')
+}
+
+function submit_register_form ( user_type) {
+    var url = '/api/v1/users/register'
+    if (user_type == 'admin') url = '/api/v1/admins/register'
+    const sign_up_form = document.getElementById(user_type + '_sign_up_form')
+    sign_up_form.addEventListener('submit', function(event){
+        event.preventDefault()
+        //Empty all error divs
+        emptyDivs(['first_name-error', 'last_name-error', 'email-error', 'password-error', 'register-info'])
+        
+        if (sign_up_form[3].value !== sign_up_form[4].value) {
+            //If passwords don't match
+            displayInfo('register-info', '<span class="alert-danger"> Oops, there was a problem:</span>')
+            displayInfo('password-error',  "Passwords do not match")
+
+        } else {
+            //Post data to api endpoint
+            fetch(url, {
+                method: "POST",
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    first_name: sign_up_form[0].value,
+                    last_name: sign_up_form[1].value,
+                    email: sign_up_form[2].value,
+                    password: sign_up_form[3].value
+                })
+            })
+            .then(function(response) {
+                return response.json()
+            })
+            .then(function(jsonResponse) {
+                var message = "User added successfully"
+                if ( user_type == 'admin') token = "Admin registered successfully"
+                if (jsonResponse.errors) {
+                    for (let error of jsonResponse.errors) {
+                        //Display error messages
+                        if (error['field'] == "first_name") displayInfo('first_name-error', error['message'])
+                        if (error['field'] == "last_name") displayInfo('last_name-error', error['message'])
+                        if (error['field'] == "email") displayInfo('email-error', error['message'])
+                        if (error['field'] == "password") displayInfo('password-error', error['message'])
+                        displayInfo('register-info', '<span class="alert-danger"> Ooops... ' + jsonResponse['message'] +'</span>')
+                    }
+                } else if (jsonResponse.error) {
+                    displayInfo('register-info', '<span class="alert-danger"> Ooops... ' + jsonResponse.error +'</span>')
+                } else if (jsonResponse.field == 'email') {
+                    displayInfo('register-info', '<span class="alert-danger"> Oops, there was a problem:</span>')
+                    displayInfo('email-error', jsonResponse.message)
+                } else if (jsonResponse.message == message) {
+                    displayInfo('register-info', '<span class="alert-success success">Registration successful, Please wait while we redirect you...</span>')
+                    var redirectUrl = '/user/login'
+                    if (user_type == 'admin') redirectUrl = '/admin/login'
+                    setTimeout(function () {
+                        window.location.href = redirectUrl
+                    }, 1000)
+                } else {
+                    displayInfo('register-info', '<span class="alert-danger"> Ooops... Unable to process your request now.</span>')
+                }
+            })
+            .catch(function(error) {
+                displayInfo('register-info', '<span class="error"> Oops, there was a problem: '+  error +'</span>')
+            });
+        }
+    }, false)
+    //Disable multiple submit
+    // sign_up_form[5].setAttribute('disabled', 'disabled')
+}
 
 function addMenu (title, description, price) {
     let data = JSON.stringify({
@@ -548,4 +676,18 @@ function readCookie (name) {
         }
     }
     return null;
+}
+
+// Create cookie
+function createCookie(name, value, days) {
+    var expires;
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime()+(days*24*60*60*1000));
+        expires = "; expires="+date.toGMTString();
+    }
+    else {
+        expires = "";
+    }
+    document.cookie = name+"="+value+expires+"; path=/";
 }
