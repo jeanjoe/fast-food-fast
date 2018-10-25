@@ -155,9 +155,7 @@ function submit_register_form ( user_type) {
 
 function addMenu (title, description, price) {
     let data = JSON.stringify({
-        title: title,
-        description: description,
-        price: price
+        title: title, description: description, price: price
     })
     //Submit data to API
     var fetchedOrderData = fetchData('/api/v1/admins/menus', 'POST', data)
@@ -590,25 +588,20 @@ function deleteMenuItem(menu_id) {
 }
 
 function fetchData( url, method, body) {
-    var append =''
+    var append = {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json', 'Authorization': "Bearer " + readCookie('access_token')
+            }
+        }
     if (body) {
         append = {
-            method: method,
-            body: body,
+            method: method, body: body,
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': "Bearer " + readCookie('access_token')
+                'Content-Type': 'application/json', 'Authorization': "Bearer " + readCookie('access_token')
             }
         }
-    } else {
-        append = {
-            method: method,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': "Bearer " + readCookie('access_token')
-            }
-        }
-    }
+    } 
     return fetch(url, append)
     .then( function (response) {
         return response.json()
@@ -627,10 +620,12 @@ function redirectUnautheneticated(type, data, timeOut){
     var message = "Error alert"
     if (data.msg) message = "Ooops Authorization error \n\n" + data.msg 
     if (data.error) message = "Ooops Authorization error \n\n" + data.error
-    alert(message)
-    setTimeout(function () {
-        window.location.href = url
-    }, timeOut)
+    if(data.msg || data.error) {
+        alert(message)
+        setTimeout(function () {
+            window.location.href = url
+        }, timeOut)
+    }
 }
 
 function displayInfo (divName, error) {
