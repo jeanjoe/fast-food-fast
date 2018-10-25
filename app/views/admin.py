@@ -135,9 +135,6 @@ def admin_delete_menu_item(menu_id):
     return jsonify(response), status
     
 
-    
-
-
 @app.route('/api/v1/admins/menus', methods=['GET'])
 @jwt_required
 @swag_from('../docs/admin_get_menus.yml')

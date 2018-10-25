@@ -33,7 +33,7 @@ class OrderModel(DatabaseConnection):
         query = """SELECT MENUS.ID, MENUS.TITLE, MENUS.DESCRIPTION, MENUS.PRICE, ORDERS.CREATED_AT,
         ORDERS.ID, ORDERS.STATUS, ORDERS.LOCATION, ORDERS.QUANTITY
         FROM MENUS INNER JOIN ORDERS ON ORDERS.MENU_ID = MENUS.ID 
-        WHERE ID= %s AND USER_ID= %s ORDER BY ORDERS.CREATED_AT DESC;"""
+        WHERE ORDERS.ID= %s AND ORDERS.USER_ID= %s ORDER BY ORDERS.CREATED_AT DESC;"""
         self.dict_cursor.execute(query, (order_id, client_id))
         orders = self.dict_cursor.fetchall()
         return orders
