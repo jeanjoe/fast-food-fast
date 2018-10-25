@@ -118,7 +118,7 @@ function submit_register_form ( user_type) {
             })
             .then(function(jsonResponse) {
                 var message = "User added successfully"
-                if ( user_type == 'admin') token = "Admin registered successfully"
+                if ( user_type == 'admin') message = "Admin registered successfully"
                 if (jsonResponse.errors) {
                     for (let error of jsonResponse.errors) {
                         //Display error messages
@@ -135,6 +135,7 @@ function submit_register_form ( user_type) {
                     displayInfo('email-error', jsonResponse.message)
                 } else if (jsonResponse.message == message) {
                     displayInfo('register-info', '<span class="alert-success success">Registration successful, Please wait while we redirect you...</span>')
+                    emptyInputs(['first_name', 'last_name', 'email', 'password', 'confirm_password'])
                     var redirectUrl = '/user/login'
                     if (user_type == 'admin') redirectUrl = '/admin/login'
                     setTimeout(function () {
@@ -332,7 +333,7 @@ function makeOrder(menu_id) {
                 alert("Ooops Validation error. \n\n" + errorMessage)
             } else if (jsonResponse.data) {
                 emptyDivs(['show_loading_status'])
-                loading_div.innerHTML = '<h4>Kudos, Order placed successfully!</h4>'
+                loading_div.innerHTML = '<h4 class="success">Kudos, Order placed successfully!</h4>'
                 loading_element.appendChild(loading_div)
                 emptyInputs(['location_' + menu_id, 'quantity_' + menu_id])
             }
@@ -342,8 +343,7 @@ function makeOrder(menu_id) {
             loading_div.innerHTML = '<h4>Error! ' + error + '</h4>'
             loading_element.appendChild(loading_div)
         })
-
-    })
+    }, false)
 }
 
 function showUserOrderHistory () {
@@ -587,6 +587,15 @@ function deleteMenuItem(menu_id) {
     })
 }
 
+function logOut(account) {
+    var url = '/user/login'
+    if (account == 'admin') url = '/admin/login'
+    deleteCookie('access_token')
+    setTimeout(function () {
+        window.location.href = url
+    }, 500)
+}
+
 function fetchData( url, method, body) {
     var append = {
             method: method,
@@ -632,7 +641,6 @@ function displayInfo (divName, error) {
     //Function to display error messages
     let element = document.getElementById(divName)
     if (element) element.innerHTML = '<span class="error">' + error +'</span>'
-    return true
 }
 
 function emptyDivs (divNames) {
@@ -641,7 +649,6 @@ function emptyDivs (divNames) {
         let element = document.getElementById(div)
         if (element) while (element.firstChild) element.removeChild(element.firstChild)
     }
-    return true
 }
 
 function emptyInputs(fieldNames) {
@@ -650,7 +657,6 @@ function emptyInputs(fieldNames) {
        let element =  document.getElementById(field)
        if (element) element.value = ''
     }
-    return true
 }
 
 function readCookie (name) {
@@ -658,27 +664,25 @@ function readCookie (name) {
     var nameEQ = name + "=";
     var ca = document.cookie.split(';');
     for(var i=0;i < ca.length;i++) {
-        var c = ca[i];
-        while (c.charAt(0) === ' ') {
-            c = c.substring(1,c.length);
+        var char = ca[i];
+        while (char.charAt(0) === ' ') {
+            char = char.substring(1,char.length);
         }
-        if (c.indexOf(nameEQ) === 0) {
-            return c.substring(nameEQ.length,c.length);
+        if (char.indexOf(nameEQ) === 0) {
+            return char.substring(nameEQ.length,char.length);
         }
     }
-    return null;
 }
 
 // Create cookie
 function createCookie(name, value, days) {
-    var expires;
+    var expires = "";
     if (days) {
         var date = new Date();
         date.setTime(date.getTime()+(days*24*60*60*1000));
         expires = "; expires="+date.toGMTString();
     }
-    else {
-        expires = "";
-    }
     document.cookie = name+"="+value+expires+"; path=/";
 }
+
+function deleteCookie(name) { createCookie(name, '', -1); }
