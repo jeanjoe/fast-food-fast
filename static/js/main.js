@@ -624,17 +624,13 @@ function fetchData( url, method, body) {
 function redirectUnautheneticated(type, data, timeOut){
     var url = '/user/login'
     if ( type == 'admin') url = '/admin/login'
-    if (data.msg) {
-        alert("Ooops Authorization error \n\n" + data.msg)
-        setTimeout(function () {
-            window.location.href = url
-        }, timeOut)
-    } else if (data.error) {
-        alert("Ooops Authorization error \n\n" + data.error)
-        setTimeout(function () {
-            window.location.href = url
-        }, timeOut)
-    }
+    var message = "Error alert"
+    if (data.msg) message = "Ooops Authorization error \n\n" + data.msg 
+    if (data.error) message = "Ooops Authorization error \n\n" + data.error
+    alert(message)
+    setTimeout(function () {
+        window.location.href = url
+    }, timeOut)
 }
 
 function displayInfo (divName, error) {
