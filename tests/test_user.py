@@ -184,3 +184,4 @@ class UserTest(BaseTest):
             headers={"Authorization": "Bearer " + token})
         assert response.status_code == 200
         self.assertIsInstance(json.loads(response.data)['order'], list)
+

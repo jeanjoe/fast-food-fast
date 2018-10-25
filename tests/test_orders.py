@@ -50,3 +50,21 @@ class OrderTest(BaseTest):
             self.base_url + "admins/orders/2",
             headers={"Authorization": "Bearer " + admin_token})
         assert response.status_code == 200
+
+    def test_admin_get_order_history(self):
+        """Test Admin get an order."""
+        admin_token = self.return_admin_token()
+        token = self.return_user_token()
+        self.app.post(
+            self.base_url + 'admins/menus',
+            headers={"Authorization": "Bearer " + admin_token},
+            json=MENU_DATA)
+        self.app.post(
+            self.base_url + "users/orders",
+            json=ORDER_DATA,
+            headers={"Authorization": "Bearer " + token})
+        response = self.app.get(
+            self.base_url + "admins/orders/history",
+            headers={"Authorization": "Bearer " + admin_token})
+        assert response.status_code == 200
+        self.assertIsInstance(json.loads(response.data)['orders'], list)
