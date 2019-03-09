@@ -31,14 +31,14 @@ def register_user():
     #If Validation passes, add to list
     get_input = request.get_json()
     if not validate_email(get_input['email']):
-        return jsonify({"error": "Invalid email address"}), 200
+        return jsonify({"error": "Invalid email address"}), 400
 
     search_duplicate_email = user.search_user('email',
                                               get_input['email'].strip())
     if search_duplicate_email:
         return jsonify(
             field="email",
-            message="This email address is already registered"), 200
+            message="This email address is already registered"), 400
     user.register_user(
         get_input['first_name'].strip(), get_input['last_name'].strip(),
         get_input['email'].strip(), get_input['password'], "client")
@@ -62,7 +62,7 @@ def login_user():
         return jsonify(
             user_token=create_access_token([user_login]),
             message="Login successfully"), 200
-    return jsonify(error="Wrong Email or password"), 401
+    return jsonify(error="Wrong Email or password"), 400
 
 
 @app.route('/api/v1/users/orders', methods=['POST'])
