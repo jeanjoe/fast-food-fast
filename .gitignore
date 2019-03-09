@@ -1,4 +1,4 @@
-env/*
+env/
 .vscode/*
 __pycache__/*
 app/__pycache__/*
@@ -10,3 +10,4 @@ tests/test_orders.pyc
 tests/__init__.pyc
 .pytest_cache/*
 .coverage
+venv/
