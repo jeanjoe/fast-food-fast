@@ -1,4 +1,6 @@
-env/
+.env
+venv/
+certs/
 .vscode/*
 __pycache__/*
 app/__pycache__/*
