@@ -20,9 +20,7 @@ nav .brand a {
   font-size: 16px;
   font-weight: 700;
 }
- nav .nav-left {
 
- }
  nav .nav-left .nav-item {
     color: #d35400;
     padding: 10px;
@@ -153,6 +151,16 @@ nav .brand a {
   background: #c0392b !important;
   border: 1px solid #c0392b;
   color: #fff;
+}
+
+.order-item .field {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+.order-item .field input, .order-item .field select {
+  border: 1px solid #7f8c8d;
+  padding: 8px;
+  
 }
 
 .order-item .date {
